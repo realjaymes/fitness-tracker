@@ -12,7 +12,7 @@
 <meta name="apple-mobile-web-app-title" content="Fitness">
 <link rel="preconnect" href="https://api.fontshare.com">
 <link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700,900&display=swap">
-<link rel="stylesheet" href="assets/style.css?v=5">
+<link rel="stylesheet" href="assets/style.css?v=17">
 </head>
 <body>
 <header class="top">
@@ -33,6 +33,35 @@
 <main>
   <div id="banner"></div>
 
+  <section id="plan" data-tab="today">
+    <h2 id="plan-title">Today</h2>
+    <p class="sub" id="plan-line"></p>
+    <div class="seg plan-pick" role="group" aria-label="Show a session" id="plan-pick"></div>
+    <div class="card" id="plan-card"></div>
+  </section>
+
+  <section id="guide" data-tab="guide">
+    <h2>Guide</h2>
+    <input type="search" class="search" id="learn-search" placeholder="Search the playbook: RIR, protein, sleep…" aria-label="Search the playbook" autocomplete="off">
+    <div id="search-results"></div>
+    <div id="guide-main">
+      <h3 class="gh">Quick guide</h3>
+      <p class="sub">What to do, cut down to the essentials. Tap a heading to open it.</p>
+      <div id="guide-body"></div>
+      <h3 class="gh">Learn</h3>
+      <p class="sub">The full playbook, explained for a beginner. Start with the Glossary when a word is new.</p>
+      <div id="learn-list" class="learn-list"></div>
+    </div>
+  </section>
+
+  <section id="chapter" data-tab="chapter">
+    <button type="button" class="back" id="chapter-back">← Guide</button>
+    <p class="sub" id="chapter-num"></p>
+    <h2 id="chapter-title"></h2>
+    <article class="card prose" id="chapter-body"></article>
+    <div class="ch-nav" id="chapter-nav"></div>
+  </section>
+
   <section id="week" data-tab="today">
     <h2>This week</h2>
     <p class="sub" id="week-line"></p>
@@ -40,7 +69,7 @@
     <div class="card status-list" id="week-status"></div>
   </section>
 
-  <section id="rhythm" data-tab="today">
+  <section id="rhythm" data-tab="progress">
     <h2>12-week rhythm</h2>
     <p class="sub">Each square is a day. A week passes with 2 strength sessions and 4 days at the step target.</p>
     <div class="card">
@@ -54,12 +83,12 @@
     </div>
   </section>
 
-  <section id="insights" data-tab="today">
+  <section id="insights" data-tab="progress">
     <h2>Insights</h2>
     <div class="card"><ul class="insights" id="insight-list"></ul></div>
   </section>
 
-  <section id="trends" data-tab="trends">
+  <section id="trends" data-tab="progress">
     <h2>Trends</h2>
     <div class="card">
       <div class="chart-head"><h3>Daily steps</h3><span class="big" id="steps-big"></span></div>
@@ -97,7 +126,7 @@
     </div>
   </section>
 
-  <section id="lifts" data-tab="lifts">
+  <section id="lifts" data-tab="progress">
     <h2>Lifts</h2>
     <div class="card">
       <select class="pick" id="lift-pick" aria-label="Choose an exercise"></select>
@@ -114,7 +143,7 @@
     </div>
   </section>
 
-  <section id="body" data-tab="body">
+  <section id="body" data-tab="progress">
     <h2>Body</h2>
     <div class="tiles" id="body-tiles"></div>
     <div class="card">
@@ -195,14 +224,13 @@
 <nav class="tabs" aria-label="Views">
   <div class="tabs-inner" role="tablist">
     <button type="button" role="tab" data-go="today" aria-selected="true"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="17" rx="3"/><path d="M3 9h18M8 2v4M16 2v4"/></svg>Week</button>
-    <button type="button" role="tab" data-go="trends" aria-selected="false"><svg viewBox="0 0 24 24"><path d="M3 17l6-6 4 4 8-8M15 7h6v6"/></svg>Trends</button>
-    <button type="button" role="tab" data-go="lifts" aria-selected="false"><svg viewBox="0 0 24 24"><path d="M6 7v10M3 9v6M18 7v10M21 9v6M6 12h12"/></svg>Lifts</button>
-    <button type="button" role="tab" data-go="body" aria-selected="false"><svg viewBox="0 0 24 24"><circle cx="12" cy="5" r="2.5"/><path d="M12 8v7M7 10l5 2 5-2M9 22l3-7 3 7"/></svg>Body</button>
+    <button type="button" role="tab" data-go="guide" aria-selected="false"><svg viewBox="0 0 24 24"><path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2zM4 21V5M8 7h7M8 11h7"/></svg>Guide</button>
+    <button type="button" role="tab" data-go="progress" aria-selected="false"><svg viewBox="0 0 24 24"><path d="M3 17l6-6 4 4 8-8M15 7h6v6"/></svg>Progress</button>
     <button type="button" role="tab" data-go="log" aria-selected="false"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Log</button>
   </div>
 </nav>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
-<script src="assets/app.js?v=5"></script>
+<script src="assets/app.js?v=17"></script>
 </body>
 </html>

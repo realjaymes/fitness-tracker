@@ -60,6 +60,193 @@
    "label": "Nov–Dec 2025 (Notion)",
    "from": "2025-11-05",
    "to": "2025-12-19"
+  },
+  "guide": {
+   "sets": "3 sets of 8–12 reps",
+   "rir": "1–3",
+   "rest": "60–120 seconds",
+   "minutes": 45,
+   "videos": {
+    "Barbell Squat": [
+     [
+      "Watch",
+      "https://www.tiktok.com/@jeremyethier/video/7270603686471290118"
+     ]
+    ],
+    "Bench Press": [
+     [
+      "Watch",
+      "https://www.youtube.com/shorts/hWbUlkb5Ms4"
+     ]
+    ],
+    "Dumbbell Row": [
+     [
+      "Watch",
+      "https://www.youtube.com/watch?v=roCP6wCXPqo"
+     ]
+    ],
+    "Dumbbell Shoulder Press": [
+     [
+      "Watch",
+      "https://www.youtube.com/shorts/k6tzKisR3NY"
+     ]
+    ],
+    "Plank": [
+     [
+      "Watch",
+      "https://www.youtube.com/watch?v=pSHjTRCQxIw"
+     ]
+    ],
+    "Deadlift": [
+     [
+      "Watch",
+      "https://www.youtube.com/watch?v=XxWcirHIwVo"
+     ]
+    ],
+    "Incline Dumbbell Press": [
+     [
+      "Watch",
+      "https://www.youtube.com/shorts/5orOHJL2qS4"
+     ]
+    ],
+    "Lunges": [
+     [
+      "Watch",
+      "https://www.youtube.com/watch?v=wrwwXE_x-pQ"
+     ]
+    ],
+    "Barbell Curl": [
+     [
+      "Watch",
+      "https://www.youtube.com/shorts/N6paU6TGFWU"
+     ]
+    ],
+    "Leg Raises": [
+     [
+      "Lying",
+      "https://www.youtube.com/watch?v=Wp4BlxcFTkE"
+     ],
+     [
+      "Bench",
+      "https://www.youtube.com/watch?v=_fVql2cFAyY"
+     ],
+     [
+      "Reverse crunch",
+      "https://www.youtube.com/watch?v=gAyTBB4lm3I"
+     ],
+     [
+      "Flutter kicks",
+      "https://www.youtube.com/watch?v=ANVdMDaYRts"
+     ]
+    ],
+    "Goblet Squat": [
+     [
+      "Watch",
+      "https://www.youtube.com/watch?v=MeIiIdhvXT4"
+     ]
+    ],
+    "Barbell Row": [
+     [
+      "Watch",
+      "https://www.youtube.com/shorts/Nqh7q3zDCoQ"
+     ]
+    ],
+    "Dumbbell Flyes": [
+     [
+      "Watch",
+      "https://www.youtube.com/watch?v=eozdVDA78K0"
+     ]
+    ],
+    "Bench Dips": [
+     [
+      "Watch",
+      "https://www.youtube.com/watch?v=0326dy_-CzM"
+     ]
+    ],
+    "Russian Twists": [
+     [
+      "Watch",
+      "https://www.youtube.com/watch?v=JyUqwkVpsi8"
+     ]
+    ]
+   },
+   "reps_note": {
+    "Plank": "3 holds, about 20–40 seconds each",
+    "Lunges": "3 sets of 8–12 reps on each leg",
+    "Russian Twists": "3 sets of 8–12 twists each side"
+   },
+   "start": {
+    "Barbell Squat": "30 kg",
+    "Bench Press": "30 kg",
+    "Deadlift": "30 kg",
+    "Barbell Curl": "20 kg",
+    "Dumbbell Row": "8.5 kg dumbbells",
+    "Dumbbell Shoulder Press": "8.5 kg dumbbells",
+    "Incline Dumbbell Press": "8.5 kg dumbbells",
+    "Dumbbell Flyes": "8.5 kg dumbbells",
+    "Lunges": "8.5 kg dumbbells",
+    "Goblet Squat": "one 8.5 kg dumbbell, held at your chest",
+    "Barbell Row": "20 kg (bar and plates together)",
+    "Bench Dips": "your body weight, knees bent to make it easier",
+    "Russian Twists": "no weight",
+    "Plank": "your body weight",
+    "Leg Raises": "your body weight, lying on the floor"
+   },
+   "warmup": [
+    [
+     "Arm circles",
+     "https://www.youtube.com/watch?v=140RTNMciH8"
+    ],
+    [
+     "Shoulder rolls",
+     "https://www.youtube.com/watch?v=0O6YdMIUTZ8"
+    ],
+    [
+     "Hip circles and leg swings",
+     "https://www.youtube.com/watch?v=QH0SRdCGXHU"
+    ],
+    [
+     "Cat-cow",
+     "https://www.youtube.com/watch?v=vuyUwtHl694"
+    ],
+    [
+     "Bodyweight squats and push-ups",
+     "https://www.youtube.com/watch?v=MeCh0X2fLao"
+    ]
+   ],
+   "cooldown": [
+    [
+     "Hamstring",
+     "https://www.youtube.com/watch?v=Nzy6_F9s6QI"
+    ],
+    [
+     "Hip flexor and glute",
+     "https://www.youtube.com/watch?v=eXHNZUrMyNk"
+    ],
+    [
+     "Chest doorway",
+     "https://www.youtube.com/watch?v=B9uY01NoqBg"
+    ],
+    [
+     "Shoulder and upper back",
+     "https://www.youtube.com/watch?v=s-7lyvblFNI"
+    ]
+   ],
+   "mobility": [
+    [
+     "Hip, shoulder and spine drills",
+     "https://www.youtube.com/watch?v=NEr4_LAcpQA"
+    ],
+    [
+     "Hip and shoulder drills",
+     "https://www.youtube.com/watch?v=DmZg7vcJfps"
+    ],
+    [
+     "12-minute stretch",
+     "https://www.youtube.com/watch?v=KrUnq66qn_k"
+    ]
+   ],
+   "measure": "https://www.youtube.com/watch?v=LoL_QTatGhU"
   }
  },
  "days": [

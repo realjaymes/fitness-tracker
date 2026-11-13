@@ -12,7 +12,7 @@
   const params = new URLSearchParams(location.search);
   const DEMO = params.get("demo") === "1";
 
-  let log, TODAY, range = "block";
+  let log, TODAY, range = "block", showTab;
   const charts = {};
 
   /* ---------- dates ---------- */
@@ -567,7 +567,7 @@
     if (!list) { box.innerHTML = type ? `<label class="f">Minutes<input type="number" name="minutes" inputmode="numeric" min="0" max="300"></label>` : ""; return; }
     box.innerHTML = `<div class="exhead"><span>Exercise</span><span>kg</span><span>Reps</span><span>RIR</span></div>` + list.map((n, i) => {
       const l = lastFor(n);
-      return `<div class="exrow"><span class="n">${esc(n)}</span><input name="kg${i}" inputmode="decimal" placeholder="${l ? l.kg : "kg"}" value="${l ? l.kg : ""}" aria-label="${esc(n)} kg"><input name="reps${i}" inputmode="text" placeholder="${n === "Plank" ? "secs" : "8,8,8"}" aria-label="${esc(n)} reps"><input name="rir${i}" inputmode="numeric" placeholder="2" aria-label="${esc(n)} reps in reserve"></div>`;
+      return `<div class="exrow"><span class="n">${esc(n)}${gd().videos?.[n] ? ` <a class="vid sm" href="${esc(gd().videos[n][0][1])}" target="_blank" rel="noopener" aria-label="Watch ${esc(n)}">▶</a>` : ""}</span><input name="kg${i}" inputmode="decimal" placeholder="${l ? l.kg : "kg"}" value="${l ? l.kg : ""}" aria-label="${esc(n)} kg"><input name="reps${i}" inputmode="text" placeholder="${n === "Plank" ? "secs" : "8,8,8"}" aria-label="${esc(n)} reps"><input name="rir${i}" inputmode="numeric" placeholder="2" aria-label="${esc(n)} reps in reserve"></div>`;
     }).join("") + `<p class="sub">Leave reps empty to skip an exercise. Reps like 10,10,9. RIR is reps left in the tank.</p>`;
   }
 
@@ -635,6 +635,221 @@
     });
   }
 
+  /* ---------- today's plan and guide ---------- */
+  let planPick = null;
+  const gd = () => cfg().guide || {};
+  const slug = t => t.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+  const ytId = url => (/(?:v=|shorts\/|youtu\.be\/)([\w-]{11})/.exec(url) || [])[1];
+  const vlinks = list => (list || []).map(([label, url]) => { const id = ytId(url);
+    return `<a class="vid" href="${esc(url)}" target="_blank" rel="noopener"${id ? ` data-yt="${id}"${/shorts\//.test(url) ? " data-tall" : ""}` : ""}>▶ ${esc(label)}${id ? "" : " (TikTok)"}</a>`; }).join("");
+  function thumb(name) {
+    const v = gd().videos?.[name]?.[0], id = v && ytId(v[1]);
+    return id ? `<button type="button" class="thumb" data-yt="${id}" data-url="${esc(v[1])}"${/shorts\//.test(v[1]) ? " data-tall" : ""} aria-label="Play the ${esc(name)} video"><img src="https://i.ytimg.com/vi/${id}/mqdefault.jpg" alt="" loading="lazy"><span>▶</span></button>` : "";
+  }
+  function play(el) {
+    const host = el.closest("li"), id = el.dataset.yt;
+    let box = host.querySelector(":scope > .player");
+    if (box && box.dataset.id === id) { box.remove(); return; }
+    if (!box) { box = document.createElement("div"); box.className = "player"; host.appendChild(box); }
+    box.dataset.id = id; box.classList.toggle("tall", el.hasAttribute("data-tall"));
+    box.innerHTML = `<div class="frame"><iframe src="https://www.youtube-nocookie.com/embed/${id}?autoplay=1&playsinline=1&rel=0" title="Exercise video" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe></div><div class="player-bar"><a href="${esc(el.dataset.url || el.href)}" target="_blank" rel="noopener">Open in YouTube</a><button type="button" class="linkish" data-close>Close video</button></div>`;
+  }
+  const STRENGTH_DAYS = [0, 2, 4];
+  function nextStrength(date) {
+    const from = date >= blockStart() ? blockStart() : "";
+    const last = log.sessions.filter(s => /^[ABC]$/.test(s.type) && s.date < date && s.date >= from).at(-1);
+    return last ? { A: "B", B: "C", C: "A" }[last.type] : "A";
+  }
+  function planFor(date) {
+    const done = sessionsOn(date).find(s => /^[ABC]$/.test(s.type));
+    if (done) return { kind: done.type, done: true };
+    const wd = dayIdx(date);
+    if (STRENGTH_DAYS.includes(wd)) return { kind: nextStrength(date) };
+    if (wd === 6) return { kind: "rest" };
+    return { kind: "walk", done: sessionsOn(date).some(s => LIGHT.has(s.type)) };
+  }
+  function missedYesterday(date) {
+    const y = addDays(date, -1);
+    if (!STRENGTH_DAYS.includes(dayIdx(y)) || y < blockStart()) return null;
+    return sessionsOn(y).some(isStrength) || sessionsOn(date).some(isStrength) ? null : nextStrength(date);
+  }
+  function weightLine(name) {
+    const l = lastFor(name), start = gd().start?.[name];
+    if (!l) return start ? `Start with ${start}.` : "";
+    const when = `Last time (${diffDays(l.date, TODAY) > 120 ? fmtY(l.date) : fmt(l.date)})`;
+    if (!l.kg) return `${when}: ${l.reps.join("/")}${name === "Plank" ? " seconds" : " reps"}. Try to beat it.`;
+    return `${when}: ${kgs(l.kg)} × ${l.reps.join("/")}. ${nextHint(name, l)}`;
+  }
+  function strengthCard(kind) {
+    const g = gd(), list = cfg().program[kind] || [];
+    const ex = list.map((n, i) => { const vids = g.videos?.[n] || [], th = thumb(n);
+      return `<li class="exi${th ? "" : " no-thumb"}">${th}<div class="exi-txt"><b>${i + 1}. ${esc(n)}</b>
+      <div class="sub">${esc(g.reps_note?.[n] || g.sets || "3 sets of 8–12 reps")}</div><div class="sub w">${esc(weightLine(n))}</div>
+      <a href="#" class="linkish howto" data-ch="10" data-anchor="${slug(n)}">How to do it, step by step</a>
+      ${!th || vids.length > 1 ? `<div class="vids">${vlinks(th ? vids.slice(1) : vids)}</div>` : ""}</div></li>`; }).join("");
+    return `<ol class="steps">
+      <li><b>Warm up, 5 minutes.</b> Move slowly and with control.<div class="vids">${vlinks(g.warmup)}</div></li>
+      <li><b>Lift.</b> A rep is one full movement, down and up. A set is a run of reps without stopping. Do all the sets of one exercise before moving to the next.
+        <br>Stop each set when you could still do ${esc(g.rir || "1–3")} more good reps, meaning full movements with control and no pain. Rest ${esc(g.rest || "60–120 seconds")} between sets, and about 2 minutes before the next exercise.
+        <ul class="exlist">${ex}</ul></li>
+      <li><b>Cool down, 5–10 minutes.</b> Hold each stretch 20–40 seconds. Mild tension, no pain, no bouncing.<div class="vids">${vlinks(g.cooldown)}</div></li>
+      <li><b>Log it.</b> The weight, the reps in each set, and how many more good reps you could have done.</li>
+    </ol>
+    <p class="note">Bad day? The warm-up and the first two exercises still count as a session.</p>
+    <button class="btn" type="button" data-log="${kind}">Log Strength ${kind}</button>`;
+  }
+  function walkCard(date) {
+    const g = gd(), t = stepTarget(date) || stepTarget(blockStart());
+    return `<ol class="steps">
+      <li><b>Walk 20–30 minutes</b> at a brisk pace, where talking is possible but singing isn't.</li>
+      <li><b>Reach ${n0(t)} steps</b> across the day. Your watch counts them. Check it in the evening and top up with a short walk if needed.</li>
+      <li><b>Mobility, 10 minutes.</b> Pick one video.<div class="vids">${vlinks(g.mobility)}</div></li>
+      <li><b>Log it.</b> Steps and sleep from your watch, protein in grams (an egg has about 6 g), and energy from 1 (drained) to 10 (full of energy).</li>
+    </ol>
+    <button class="btn" type="button" data-log="walk">Log today</button>`;
+  }
+  function restCard(date) {
+    const t = stepTarget(date) || stepTarget(blockStart());
+    return `<ol class="steps">
+      <li><b>Rest from lifting.</b> Muscles rebuild on rest days.</li>
+      <li><b>Still reach ${n0(t)} steps.</b> The step target counts every day.</li>
+      <li><b>Get ready for tomorrow:</b> sleep 7 hours or more, and plan tomorrow's protein: eggs, chicken, fish, beans or Greek yoghurt at each meal.</li>
+    </ol>
+    <button class="btn" type="button" data-log="rest">Log today</button>`;
+  }
+  function renderPlan() {
+    const before = TODAY < blockStart(), date = before ? blockStart() : TODAY;
+    const auto = planFor(date), kind = planPick || auto.kind;
+    const names = { A: "Strength A", B: "Strength B", C: "Strength C", walk: "Walk and mobility", rest: "Rest day" };
+    const g = gd();
+    document.getElementById("plan-title").textContent = before ? `First session: ${fmtW(date)}` : (planPick ? names[kind] : `Today: ${names[kind]}`);
+    let line = "";
+    if (/^[ABC]$/.test(kind)) line = `About ${g.minutes || 45} minutes. Tap ▶ to watch how each move is done.`;
+    if (!planPick && auto.done) line = `Done and logged today. ${line}`;
+    const miss = !before && !planPick && !auto.done && (kind === "walk" || kind === "rest") ? missedYesterday(date) : null;
+    document.getElementById("plan-line").innerHTML = esc(line) + (miss ? `${line ? " " : ""}<span class="miss">You missed yesterday's session. One miss is normal, two in a row starts a habit of skipping: <button type="button" class="linkish" data-pick="${miss}">do Strength ${miss} today instead</button>.</span>` : "");
+    const opts = [["auto", before ? "Day 1" : "Today"], ["A", "A"], ["B", "B"], ["C", "C"], ["walk", "Walk"]];
+    document.getElementById("plan-pick").innerHTML = opts.map(([k, l]) => `<button type="button" data-pick="${k}" aria-pressed="${(planPick || "auto") === k}">${l}</button>`).join("");
+    document.getElementById("plan-card").innerHTML = /^[ABC]$/.test(kind) ? strengthCard(kind) : kind === "walk" ? walkCard(date) : restCard(date);
+  }
+
+  function renderGuide() {
+    const g = gd(), t = cfg().targets, steps = t.steps.map(s => n0(s.steps));
+    const sec = (title, body, open) => `<details class="card gsec"${open ? " open" : ""}><summary>${title}</summary><div class="gbody">${body}</div></details>`;
+    document.getElementById("guide-body").innerHTML = [
+      sec("What to do each day", `<ul>
+        <li><b>Monday, Wednesday, Friday:</b> a strength session (A, then B, then C). The Week tab shows exactly what to do.</li>
+        <li><b>Tuesday, Thursday, Saturday:</b> a 20–30 minute walk and 10 minutes of mobility.</li>
+        <li><b>Sunday:</b> rest from lifting.</li>
+        <li><b>Every day:</b> reach your step target, eat about ${t.protein_g} g of protein, sleep ${t.sleep_h} hours or more, and log your numbers.</li></ul>
+        <p>Missed a strength day? Do it the next day. Any three days with a day between them work.</p><figure class="fig"><img src="assets/learn/week.svg" alt="Your week: strength on Monday, Wednesday and Friday, walks on the other days, rest on Sunday" loading="lazy"></figure>`, true),
+      sec("How a week passes", `<p>A week passes with <b>${t.pass_sessions} or more strength sessions</b> and <b>${t.pass_step_days} or more days at the step target</b>. Three sessions is the plan, two is the pass.</p>
+<figure class="fig"><img src="assets/learn/steps.svg" alt="Daily step target rising from 5,000 to 8,000 over 12 weeks" loading="lazy"></figure>
+        <p>Step target: ${steps[0]} a day in weeks 1–2, ${steps[1]} in weeks 3–4, ${steps[2]} in weeks 5–8 and ${steps[3]} in weeks 9–12.</p>
+        <p><b>Never miss twice.</b> One missed session is normal. Two in a row starts a new habit of skipping.</p>
+        <p><b>The minimum session:</b> on a bad day, the warm-up and the first two exercises (about 20 minutes) still count.</p>`),
+      sec("How to do a strength session", `<p>Warm up for 5 minutes, do the five exercises, then cool down. Each exercise has a ▶ video on the Week tab. Watch it before the first set until the move feels familiar.</p><figure class="fig"><img src="assets/learn/session.svg" alt="A strength session: warm-up, five exercises, cool-down" loading="lazy"></figure><figure class="fig"><img src="assets/learn/sets.svg" alt="Three sets of ten reps" loading="lazy"></figure><figure class="fig"><img src="assets/learn/rir.svg" alt="Reps in reserve: stop each set with 1 to 3 good reps left" loading="lazy"></figure>
+        <ul><li><b>Rep:</b> one full movement, down and up.</li>
+        <li><b>Set:</b> a group of reps done without stopping. "3 sets of 8–12" means 8–12 reps, rest, twice more.</li>
+        <li><b>Reps in reserve:</b> how many more good reps you could have done when you stopped. End each set with ${esc(g.rir || "1–3")} left. If you could have done 5 more, it was too light.</li>
+        <li><b>Rest:</b> ${esc(g.rest || "60–120 seconds")} between sets, long enough to hit your reps again.</li>
+        <li><b>Speed:</b> about 2–3 seconds lowering and 1 second lifting. Control beats speed.</li></ul>
+        <p><b>Form comes first.</b> Start light. Effort and a burning muscle are fine. Stop a set if you feel sharp pain or pain in a joint.</p>`),
+      sec("When to add weight", `<p>Stay at a weight until <b>every set reaches 12 reps</b> with good form. Then add the smallest jump and go back to 8 reps: 2.5 kg on a barbell, or the next dumbbell pair up.</p>
+        <p>Example: 30 kg for 10, 9, 8 reps. Next time 11, 10, 9. Later 12, 12, 12. Next session, 32.5 kg for 8 each set.</p>
+<figure class="fig"><img src="assets/learn/progression.svg" alt="Add reps until every set reaches 12, then add weight" loading="lazy"></figure>
+        <p>You don't need to work this out. The Week tab shows "stay" or "go up" for each exercise from your last log.</p>`),
+      sec("Eating", `<ul><li><b>Protein, about ${t.protein_g} g a day,</b> spread over 3–4 meals. Rough amounts: an egg has about 6 g, 100 g of cooked chicken about 30 g, a cup of cooked beans about 15 g, a scoop of whey (a protein powder) about 20–25 g. 100 g of cooked chicken is about the size of your palm.</li>
+        <li><b>Before training:</b> a meal 2–3 hours before, or a light snack with carbs (starchy or sweet foods like bread, oats, plantain or fruit) and protein 30–60 minutes before.</li>
+        <li><b>After training:</b> a meal with protein within a few hours. There's no 30-minute rush.</li>
+        <li><b>Water:</b> about 2.5–3 litres a day, which is 5 or 6 bottles of 500 ml, more when you sweat. Pale yellow urine means you're drinking enough.</li>
+        <li>Vegetables or fruit in 2 or more meals.</li></ul><figure class="fig"><img src="assets/learn/protein.svg" alt="About 120 g of protein a day as four meals of about 30 g" loading="lazy"></figure>`),
+      sec("Sleep and recovery", `<ul><li>Sleep ${t.sleep_h}–9 hours, at roughly the same times each night.</li>
+        <li>No caffeine after 2 pm, screens off 60–90 minutes before bed, and a light dinner 2–3 hours before bed.</li>
+        <li>Soreness is normal in the first weeks. Soreness lasting more than 3 days, constant tiredness or stalled lifts mean you need more sleep, food or rest.</li></ul>`),
+      sec("What to log and when", `<ul><li><b>Every day:</b> steps and sleep from your watch, protein in grams (a guess is fine), energy from 1 (drained) to 10 (full of energy).</li>
+        <li><b>After each session:</b> weight, reps for each set and reps in reserve for every exercise.</li>
+        <li><b>2–3 mornings a week:</b> body weight, before eating. The trend matters, not one reading.</li>
+        <li><b>Every 4 weeks:</b> waist, hips, chest, arm and thigh (<a href="${esc(g.measure || "#")}" target="_blank" rel="noopener">how to measure</a>), plus front, side and back photos that stay off this page.</li></ul>
+        <p>Log on the Log tab, or tell Claude "log today" with your numbers. Every Sunday evening a Telegram message scores your week.</p>`),
+    ].join("");
+  }
+
+  function startLog(kind) {
+    const f = document.getElementById("log-form");
+    f.date.value = TODAY; prefill(TODAY);
+    f.type.value = /^[ABC]$/.test(kind) ? kind : kind === "walk" ? "walk" : "";
+    f.type.dispatchEvent(new Event("change"));
+    showTab("log");
+  }
+  function wirePlan() {
+    document.getElementById("plan").addEventListener("click", e => {
+      const y = e.target.closest("[data-yt]"), c = e.target.closest("[data-close]");
+      if (y) { e.preventDefault(); play(y); return; }
+      if (c) { c.closest(".player").remove(); return; }
+      const p = e.target.closest("[data-pick]"), l = e.target.closest("[data-log]");
+      if (p) { planPick = p.dataset.pick === "auto" ? null : p.dataset.pick; renderPlan(); }
+      if (l) startLog(l.dataset.log);
+    });
+  }
+
+
+  /* ---------- learn library (data/learn.json, built from the vault playbook) ---------- */
+  let learn = null;
+  async function loadLearn() {
+    if (learn) return learn;
+    try { learn = await (await fetch(`data/learn.json?t=${Date.now()}`, { cache: "no-store" })).json(); }
+    catch { learn = []; }
+    return learn;
+  }
+  async function renderLearnList() {
+    const box = document.getElementById("learn-list");
+    const ch = await loadLearn();
+    box.innerHTML = ch.length ? ch.map((c, i) => `<button type="button" class="learn-item" data-ch="${c.id}"><span class="num">${i + 1}</span><span><b>${esc(c.title)}</b><span class="sub">${esc(c.blurb)}</span></span></button>`).join("")
+      : `<p class="sub">The library didn't load. Check your connection and reopen the Guide.</p>`;
+  }
+  async function openChapter(id, anchor) {
+    const ch = await loadLearn(), i = ch.findIndex(c => c.id === id);
+    if (i < 0) return;
+    const c = ch[i];
+    document.getElementById("chapter-num").textContent = `Chapter ${i + 1} of ${ch.length}`;
+    document.getElementById("chapter-title").textContent = c.title;
+    document.getElementById("chapter-body").innerHTML = c.html;
+    const prev = ch[i - 1], next = ch[i + 1];
+    document.getElementById("chapter-nav").innerHTML =
+      (prev ? `<button type="button" class="btn ghost" data-ch="${prev.id}">← ${esc(prev.title)}</button>` : "<span></span>") +
+      (next ? `<button type="button" class="btn ghost" data-ch="${next.id}">${esc(next.title)} →</button>` : "");
+    showTab("chapter");
+    const target = anchor && document.getElementById(anchor);
+    if (target) target.scrollIntoView();
+  }
+  async function searchLearn(q) {
+    const box = document.getElementById("search-results"), main = document.getElementById("guide-main");
+    q = q.trim().toLowerCase();
+    if (q.length < 2) { box.innerHTML = ""; main.hidden = false; return; }
+    const ch = await loadLearn(), tmp = document.createElement("div"), hits = [];
+    for (const c of [...ch].sort((a, b) => (b.title === "Glossary") - (a.title === "Glossary"))) {
+      if (!c.text.toLowerCase().includes(q)) continue;
+      tmp.innerHTML = c.html;
+      const blocks = [...tmp.querySelectorAll("p, li, tr")].filter(el => !el.querySelector("li") && el.textContent.toLowerCase().includes(q)).slice(0, 3);
+      hits.push(`<div class="card hit"><button type="button" class="hit-title" data-ch="${c.id}">${esc(c.title)} →</button>` +
+        blocks.map(el => { const tx = (el.tagName === "TR" ? [...el.cells].map(c => c.textContent.trim()).join(" · ") : el.textContent).replace(/\s+/g, " ").trim(); const k = tx.toLowerCase().indexOf(q), st = Math.max(0, k - 80);
+          const snip = (st ? "…" : "") + tx.slice(st, st + 220) + (tx.length > st + 220 ? "…" : "");
+          return `<p class="snip">${esc(snip).replace(new RegExp(q.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "gi"), m => `<mark>${m}</mark>`)}</p>`; }).join("") + `</div>`);
+    }
+    main.hidden = true;
+    box.innerHTML = hits.length ? `<p class="sub">${hits.length} chapter${hits.length > 1 ? "s" : ""} mention "${esc(q)}".</p>` + hits.join("") : `<p class="sub">Nothing in the playbook mentions "${esc(q)}".</p>`;
+  }
+  function wireLearn() {
+    document.addEventListener("click", e => {
+      const a = e.target.closest("[data-ch]");
+      if (!a || !a.closest("#guide, #chapter, #plan")) return;
+      e.preventDefault(); openChapter(a.dataset.ch, a.dataset.anchor);
+    });
+    document.getElementById("chapter-back").addEventListener("click", () => showTab("guide"));
+    document.getElementById("learn-search").addEventListener("input", e => searchLearn(e.target.value));
+  }
+
   /* ---------- layout ---------- */
   function wireLayout() {
     if (typeof Chart !== "undefined") Chart.defaults.font.family = getComputedStyle(document.body).fontFamily;
@@ -644,19 +859,22 @@
       renderTrends(); renderLifts(); renderBody();
     }));
     document.getElementById("lift-pick").addEventListener("change", renderLifts);
-    const show = tab => {
+    const show = showTab = tab => {
+      document.body.dataset.tab = tab;
       document.querySelectorAll("section[data-tab]").forEach(s => s.classList.toggle("on", s.dataset.tab === tab));
-      document.querySelectorAll(".tabs [data-go]").forEach(b => b.setAttribute("aria-selected", String(b.dataset.go === tab)));
+      document.querySelectorAll(".tabs [data-go]").forEach(b => b.setAttribute("aria-selected", String(b.dataset.go === (tab === "chapter" ? "guide" : tab))));
+      if (tab === "guide") renderLearnList();
       Object.values(charts).forEach(c => c.resize());
       window.scrollTo(0, 0);
     };
-    document.querySelectorAll(".tabs [data-go]").forEach(b => b.addEventListener("click", () => show(b.dataset.go)));
+    wirePlan(); wireLearn();
+    document.querySelector(".tabs").addEventListener("click", e => { const b = e.target.closest("[data-go]"); if (b) show(b.dataset.go); });
     show("today");
     matchMedia("(prefers-color-scheme: dark)").addEventListener("change", renderAll);
   }
 
   function renderAll() {
-    renderHeader(); renderWeek(); renderGrid(); renderInsights();
+    renderHeader(); renderPlan(); renderGuide(); renderWeek(); renderGrid(); renderInsights();
     renderTrends(); renderLifts(); renderBody(); renderHistory();
   }
 

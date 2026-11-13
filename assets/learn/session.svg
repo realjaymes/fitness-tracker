@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 152" width="360" height="152" role="img" aria-label="A strength session: 5 minute warm-up, then 5 exercises of 3 sets, then a 5 to 10 minute cool-down"><title>A strength session: 5 minute warm-up, then 5 exercises of 3 sets, then a 5 to 10 minute cool-down</title><style>
+.t{font:700 13px system-ui,-apple-system,'Segoe UI',sans-serif;fill:#1c1422} .h{font:800 15px system-ui,-apple-system,'Segoe UI',sans-serif;fill:#1c1422}
+.s{font:400 11px system-ui,-apple-system,'Segoe UI',sans-serif;fill:#5d5464} .m{font:700 11px system-ui,-apple-system,'Segoe UI',sans-serif;fill:#1c1422}
+.w{font:700 12px system-ui,-apple-system,'Segoe UI',sans-serif;fill:#ffffff} .k{font:700 12px system-ui,-apple-system,'Segoe UI',sans-serif;fill:#100a16}
+.soft{fill:#efe9f4} .line{stroke:#cfc6d6;fill:none} .ink{fill:#1c1422} .inks{stroke:#1c1422;fill:none}
+.acc{fill:#f1de71} .avg{stroke:#eb6834;fill:none} .blue{fill:#2a78d6} .aqua{fill:#1baf7a} .orng{fill:#eb6834}
+@media (prefers-color-scheme: dark) {
+ .t,.h,.m{fill:#f7f4fa} .s{fill:#bdb4c4} .soft{fill:#271d2f} .line{stroke:#3a2e44}
+ .ink{fill:#f7f4fa} .inks{stroke:#f7f4fa} .blue{fill:#3987e5} .aqua{fill:#199e70} .orng{fill:#d95926} .avg{stroke:#f08a5d}
+}
+</style><text x="0" y="16" class="h" text-anchor="start">A strength session, about 45 minutes</text><rect x="0" y="32" width="46" height="40" rx="8" class="aqua"/><rect x="50" y="32" width="250" height="40" rx="8" class="blue"/><rect x="304" y="32" width="56" height="40" rx="8" class="aqua"/><text x="23" y="57" class="w" text-anchor="middle">5 min</text><text x="175" y="57" class="w" text-anchor="middle">5 exercises × 3 sets</text><text x="332" y="57" class="w" text-anchor="middle">5–10</text><text x="0" y="90" class="m" text-anchor="start">Warm up</text><text x="175" y="90" class="m" text-anchor="middle">Lift, resting 1–2 minutes between sets</text><text x="360" y="90" class="m" text-anchor="end">Cool down</text><path d="M0 104 v8 h150 v-8" class="inks"/><text x="0" y="130" class="s" text-anchor="start">Bad day? The warm-up and the first 2 exercises</text><text x="0" y="145" class="s" text-anchor="start">(about 20 minutes) still count as a session.</text></svg>
