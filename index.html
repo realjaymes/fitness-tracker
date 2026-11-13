@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Fitness Tracker</title>
+<meta name="description" content="James Praise's workout and fitness tracker: weekly rhythm, steps, sleep, lifts and body trends.">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#f9f9f7" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0d0d0d" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Fitness">
+<link rel="stylesheet" href="assets/style.css?v=3">
+</head>
+<body>
+<header class="top">
+  <div class="top-inner">
+    <div class="title-row">
+      <div>
+        <h1>Fitness Tracker</h1>
+        <p class="sub" id="block-line">Loading…</p>
+      </div>
+      <div class="seg" role="group" aria-label="Date range">
+        <button type="button" data-range="block" aria-pressed="true">Block</button>
+        <button type="button" data-range="all" aria-pressed="false">All time</button>
+      </div>
+    </div>
+    <nav class="anchors" aria-label="Sections">
+      <a href="#week">This week</a><a href="#rhythm">Rhythm</a><a href="#insights">Insights</a>
+      <a href="#trends">Trends</a><a href="#lifts">Lifts</a><a href="#body">Body</a>
+      <a href="#log">Log</a><a href="#history">History</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <div id="banner"></div>
+
+  <section id="week" data-tab="today">
+    <h2>This week</h2>
+    <p class="sub" id="week-line"></p>
+    <div class="tiles" id="tiles"></div>
+    <div class="card status-list" id="week-status"></div>
+  </section>
+
+  <section id="rhythm" data-tab="today">
+    <h2>12-week rhythm</h2>
+    <p class="sub">Each square is a day. A week passes with 2 strength sessions and 4 days at the step target.</p>
+    <div class="card">
+      <div class="hgrid" id="hgrid"></div>
+      <div class="legend">
+        <span><i style="background:var(--s1)"></i>Strength</span>
+        <span><i style="background:var(--s3)"></i>Walk or mobility</span>
+        <span><i style="background:var(--empty)"></i>No session</span>
+        <span><i style="background:var(--ink);border-radius:50%;width:8px;height:8px"></i>Step target hit</span>
+      </div>
+    </div>
+  </section>
+
+  <section id="insights" data-tab="today">
+    <h2>Insights</h2>
+    <div class="card"><ul class="insights" id="insight-list"></ul></div>
+  </section>
+
+  <section id="trends" data-tab="trends">
+    <h2>Trends</h2>
+    <div class="card">
+      <div class="chart-head"><h3>Daily steps</h3><span class="big" id="steps-big"></span></div>
+      <div class="legend">
+        <span><i style="background:var(--s1)"></i>Steps</span>
+        <span><i class="ln" style="background:var(--s2)"></i>7-day average</span>
+        <span><i class="dash"></i>Target</span>
+      </div>
+      <div class="chart-box tall"><canvas id="c-steps" aria-label="Daily steps chart"></canvas></div>
+    </div>
+    <div class="card">
+      <h3>Sessions per week</h3>
+      <div class="legend">
+        <span><i style="background:var(--s1)"></i>Strength</span>
+        <span><i style="background:var(--s3)"></i>Walk or mobility</span>
+        <span><i class="dash"></i>Pass line (2 strength)</span>
+      </div>
+      <div class="chart-box"><canvas id="c-sessions" aria-label="Sessions per week chart"></canvas></div>
+    </div>
+    <div class="card">
+      <h3>Average steps per week</h3>
+      <div class="chart-box"><canvas id="c-wsteps" aria-label="Average steps per week chart"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="chart-head"><h3>Sleep (hours)</h3><span class="big" id="sleep-big"></span></div>
+      <div class="chart-box"><canvas id="c-sleep" aria-label="Sleep chart"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="chart-head"><h3>Energy (1–10)</h3><span class="big" id="energy-big"></span></div>
+      <div class="chart-box"><canvas id="c-energy" aria-label="Energy chart"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="chart-head"><h3>Protein (grams)</h3><span class="big" id="protein-big"></span></div>
+      <div class="chart-box"><canvas id="c-protein" aria-label="Protein chart"></canvas></div>
+    </div>
+  </section>
+
+  <section id="lifts" data-tab="lifts">
+    <h2>Lifts</h2>
+    <div class="card">
+      <select class="pick" id="lift-pick" aria-label="Choose an exercise"></select>
+      <p class="sub" id="lift-line" style="margin-top:8px"></p>
+      <div class="legend">
+        <span><i class="ln" style="background:var(--s1)"></i>Top set (kg)</span>
+        <span><i class="ln" style="background:var(--s2)"></i>Estimated 1-rep max (kg)</span>
+      </div>
+      <div class="chart-box tall"><canvas id="c-lift" aria-label="Lift progression chart"></canvas></div>
+    </div>
+    <div class="card scroll-x">
+      <h3 style="margin-top:0">All lifts</h3>
+      <table id="lift-table"></table>
+    </div>
+  </section>
+
+  <section id="body" data-tab="body">
+    <h2>Body</h2>
+    <div class="tiles" id="body-tiles"></div>
+    <div class="card">
+      <div class="chart-head"><h3>Weight (kg)</h3><span class="big" id="weight-big"></span></div>
+      <div class="legend">
+        <span><i style="background:var(--s1);border-radius:50%"></i>Weigh-in</span>
+        <span><i class="ln" style="background:var(--s2)"></i>7-day average</span>
+      </div>
+      <div class="chart-box"><canvas id="c-weight" aria-label="Weight chart"></canvas></div>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">Waist (inches)</h3>
+      <div class="chart-box"><canvas id="c-waist" aria-label="Waist chart"></canvas></div>
+    </div>
+    <div class="card scroll-x">
+      <h3 style="margin-top:0">Measurements</h3>
+      <table id="measure-table"></table>
+    </div>
+  </section>
+
+  <section id="log" data-tab="log">
+    <h2>Log</h2>
+    <p class="sub">The easiest way is to tell Claude. This form saves straight to the tracker from your phone.</p>
+    <form class="card form" id="log-form" autocomplete="off">
+      <div class="fgrid">
+        <label class="f">Date<input type="date" name="date" required></label>
+        <label class="f">Steps<input type="number" name="steps" inputmode="numeric" min="0" max="80000"></label>
+        <label class="f">Sleep (hours)<input type="number" name="sleep" inputmode="decimal" step="0.25" min="0" max="16"></label>
+        <label class="f">Protein (g)<input type="number" name="protein" inputmode="numeric" min="0" max="400"></label>
+        <label class="f">Energy (1–10)<input type="number" name="energy" inputmode="numeric" min="1" max="10"></label>
+        <label class="f">Session
+          <select name="type">
+            <option value="">None</option>
+            <option value="A">Strength A</option><option value="B">Strength B</option><option value="C">Strength C</option>
+            <option value="walk">Walk</option><option value="mobility">Mobility</option>
+            <option value="cardio">Cardio</option><option value="hiit">HIIT</option>
+          </select>
+        </label>
+      </div>
+      <div id="ex-rows"></div>
+      <details>
+        <summary class="sub">Body (weigh-in and 4-weekly measurements)</summary>
+        <div class="fgrid" style="margin-top:10px">
+          <label class="f">Weight (kg)<input type="number" name="weight" inputmode="decimal" step="0.1"></label>
+          <label class="f">Waist (in)<input type="number" name="waist" inputmode="decimal" step="0.1"></label>
+          <label class="f">Hips (in)<input type="number" name="hips" inputmode="decimal" step="0.1"></label>
+          <label class="f">Chest (in)<input type="number" name="chest" inputmode="decimal" step="0.1"></label>
+          <label class="f">Arm (in)<input type="number" name="arm" inputmode="decimal" step="0.1"></label>
+          <label class="f">Thigh (in)<input type="number" name="thigh" inputmode="decimal" step="0.1"></label>
+        </div>
+      </details>
+      <label class="f">Note<input type="text" name="note" maxlength="200"></label>
+      <button class="btn" type="submit">Save</button>
+      <p class="msg" id="form-msg" role="status"></p>
+    </form>
+    <details class="card">
+      <summary class="sub">Phone setup (one time)</summary>
+      <div class="form" style="margin-top:10px">
+        <p class="sub">The form saves through GitHub. On GitHub, create a fine-grained personal access token with access to the fitness-tracker repository only and "Contents: Read and write" permission. Paste it below. It stays in this browser and is never shown on the page.</p>
+        <label class="f">Access token<input type="password" id="token" autocomplete="off" spellcheck="false"></label>
+        <div style="display:flex;gap:8px">
+          <button class="btn" type="button" id="token-save">Save token</button>
+          <button class="btn ghost" type="button" id="token-clear">Remove</button>
+        </div>
+        <p class="msg" id="token-msg" role="status"></p>
+      </div>
+    </details>
+  </section>
+  <section id="history" data-tab="log">
+    <h2>Then and now</h2>
+    <div class="card scroll-x"><table id="compare-table"></table></div>
+    <h2 style="margin-top:22px">Recent days</h2>
+    <div class="card hist" id="hist"></div>
+  </section>
+
+</main>
+
+<nav class="tabs" aria-label="Views">
+  <div class="tabs-inner" role="tablist">
+    <button type="button" role="tab" data-go="today" aria-selected="true"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="17" rx="3"/><path d="M3 9h18M8 2v4M16 2v4"/></svg>Week</button>
+    <button type="button" role="tab" data-go="trends" aria-selected="false"><svg viewBox="0 0 24 24"><path d="M3 17l6-6 4 4 8-8M15 7h6v6"/></svg>Trends</button>
+    <button type="button" role="tab" data-go="lifts" aria-selected="false"><svg viewBox="0 0 24 24"><path d="M6 7v10M3 9v6M18 7v10M21 9v6M6 12h12"/></svg>Lifts</button>
+    <button type="button" role="tab" data-go="body" aria-selected="false"><svg viewBox="0 0 24 24"><circle cx="12" cy="5" r="2.5"/><path d="M12 8v7M7 10l5 2 5-2M9 22l3-7 3 7"/></svg>Body</button>
+    <button type="button" role="tab" data-go="log" aria-selected="false"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Log</button>
+  </div>
+</nav>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script src="assets/app.js?v=3"></script>
+</body>
+</html>

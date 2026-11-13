@@ -1,0 +1,532 @@
+{
+ "config": {
+  "name": "James Praise",
+  "height_m": 1.71,
+  "block": {
+   "name": "Rhythm Block 1",
+   "start": "2026-11-16",
+   "weeks": 12,
+   "goal": "Build a weekly workout rhythm and move more"
+  },
+  "targets": {
+   "sessions_per_week": 3,
+   "pass_sessions": 2,
+   "pass_step_days": 4,
+   "sleep_h": 7,
+   "protein_g": 120,
+   "steps": [
+    {
+     "from_week": 1,
+     "steps": 5000
+    },
+    {
+     "from_week": 3,
+     "steps": 6000
+    },
+    {
+     "from_week": 5,
+     "steps": 7000
+    },
+    {
+     "from_week": 9,
+     "steps": 8000
+    }
+   ]
+  },
+  "program": {
+   "A": [
+    "Barbell Squat",
+    "Bench Press",
+    "Dumbbell Row",
+    "Dumbbell Shoulder Press",
+    "Plank"
+   ],
+   "B": [
+    "Deadlift",
+    "Incline Dumbbell Press",
+    "Lunges",
+    "Barbell Curl",
+    "Leg Raises"
+   ],
+   "C": [
+    "Goblet Squat",
+    "Barbell Row",
+    "Dumbbell Flyes",
+    "Bench Dips",
+    "Russian Twists"
+   ]
+  },
+  "baseline": {
+   "label": "Nov–Dec 2025 (Notion)",
+   "from": "2025-11-05",
+   "to": "2025-12-19"
+  }
+ },
+ "days": [
+  {
+   "date": "2025-11-05",
+   "steps": 2120
+  },
+  {
+   "date": "2025-11-06",
+   "steps": 2362
+  },
+  {
+   "date": "2025-11-07",
+   "steps": 2021
+  },
+  {
+   "date": "2025-11-08",
+   "steps": 4052
+  },
+  {
+   "date": "2025-11-09",
+   "steps": 4065
+  },
+  {
+   "date": "2025-11-10",
+   "steps": 4821
+  },
+  {
+   "date": "2025-11-11",
+   "steps": 2786
+  },
+  {
+   "date": "2025-11-12",
+   "steps": 1000
+  },
+  {
+   "date": "2025-11-13",
+   "steps": 4294
+  },
+  {
+   "date": "2025-11-14",
+   "steps": 3259
+  },
+  {
+   "date": "2025-11-15",
+   "steps": 2922
+  },
+  {
+   "date": "2025-11-16",
+   "steps": 1465
+  },
+  {
+   "date": "2025-11-17",
+   "steps": 2720
+  },
+  {
+   "date": "2025-11-18",
+   "steps": 2809
+  },
+  {
+   "date": "2025-11-19",
+   "steps": 3280
+  },
+  {
+   "date": "2025-11-20",
+   "steps": 2327
+  },
+  {
+   "date": "2025-11-21",
+   "steps": 2327
+  },
+  {
+   "date": "2025-11-22",
+   "steps": 2460
+  },
+  {
+   "date": "2025-11-23",
+   "steps": 1086
+  },
+  {
+   "date": "2025-11-24",
+   "steps": 2466
+  },
+  {
+   "date": "2025-11-25",
+   "steps": 2878
+  },
+  {
+   "date": "2025-11-26",
+   "steps": 2287
+  },
+  {
+   "date": "2025-11-27",
+   "steps": 2268
+  },
+  {
+   "date": "2025-11-28",
+   "steps": 3047
+  },
+  {
+   "date": "2025-11-29",
+   "steps": 2602
+  },
+  {
+   "date": "2025-11-30",
+   "steps": 1055
+  },
+  {
+   "date": "2025-12-01",
+   "steps": 2704
+  },
+  {
+   "date": "2025-12-02",
+   "steps": 2114
+  },
+  {
+   "date": "2025-12-19",
+   "steps": 2114
+  }
+ ],
+ "sessions": [
+  {
+   "date": "2025-11-05",
+   "type": "B",
+   "exercises": [
+    {
+     "name": "Deadlift",
+     "kg": 40,
+     "reps": [
+      8,
+      8,
+      8
+     ],
+     "rir": null
+    },
+    {
+     "name": "Incline Dumbbell Press",
+     "kg": 5,
+     "reps": [
+      8,
+      8,
+      8
+     ],
+     "rir": null
+    },
+    {
+     "name": "Lunges",
+     "kg": 5,
+     "reps": [
+      8,
+      8,
+      8
+     ],
+     "rir": null
+    },
+    {
+     "name": "Barbell Curl",
+     "kg": 20,
+     "reps": [
+      8,
+      8,
+      8
+     ],
+     "rir": null
+    },
+    {
+     "name": "Leg Raises",
+     "kg": 0,
+     "reps": [
+      8,
+      8,
+      8
+     ],
+     "rir": null
+    }
+   ]
+  },
+  {
+   "date": "2025-11-06",
+   "type": "mobility",
+   "exercises": [],
+   "note": "Yoga/stretching + core circuit"
+  },
+  {
+   "date": "2025-11-10",
+   "type": "A",
+   "exercises": [
+    {
+     "name": "Barbell Squat",
+     "kg": 20,
+     "reps": [
+      8,
+      8,
+      8
+     ],
+     "rir": null
+    },
+    {
+     "name": "Bench Press",
+     "kg": 20,
+     "reps": [
+      8,
+      8,
+      8
+     ],
+     "rir": null
+    },
+    {
+     "name": "Dumbbell Row",
+     "kg": 5,
+     "reps": [
+      8,
+      8,
+      8
+     ],
+     "rir": null
+    },
+    {
+     "name": "Dumbbell Shoulder Press",
+     "kg": 5,
+     "reps": [
+      8,
+      8,
+      8
+     ],
+     "rir": null
+    }
+   ]
+  },
+  {
+   "date": "2025-11-12",
+   "type": "walk",
+   "exercises": [],
+   "note": "Brisk walk + mobility drills"
+  },
+  {
+   "date": "2025-11-17",
+   "type": "A",
+   "exercises": [
+    {
+     "name": "Barbell Squat",
+     "kg": 20,
+     "reps": [
+      10,
+      10,
+      10
+     ],
+     "rir": null
+    },
+    {
+     "name": "Bench Press",
+     "kg": 20,
+     "reps": [
+      10,
+      10,
+      10
+     ],
+     "rir": null
+    },
+    {
+     "name": "Dumbbell Row",
+     "kg": 5,
+     "reps": [
+      10,
+      10,
+      10
+     ],
+     "rir": null
+    },
+    {
+     "name": "Dumbbell Shoulder Press",
+     "kg": 5,
+     "reps": [
+      10,
+      10,
+      10
+     ],
+     "rir": null
+    }
+   ]
+  },
+  {
+   "date": "2025-11-24",
+   "type": "A",
+   "exercises": [
+    {
+     "name": "Barbell Squat",
+     "kg": 30,
+     "reps": [
+      8,
+      8,
+      8
+     ],
+     "rir": null
+    },
+    {
+     "name": "Bench Press",
+     "kg": 30,
+     "reps": [
+      8,
+      8,
+      8
+     ],
+     "rir": null
+    },
+    {
+     "name": "Dumbbell Row",
+     "kg": 8.5,
+     "reps": [
+      8,
+      8,
+      8
+     ],
+     "rir": null
+    },
+    {
+     "name": "Dumbbell Shoulder Press",
+     "kg": 8.5,
+     "reps": [
+      8,
+      8,
+      8
+     ],
+     "rir": null
+    }
+   ]
+  },
+  {
+   "date": "2025-11-25",
+   "type": "walk",
+   "exercises": [],
+   "note": "20–30 min brisk walk"
+  },
+  {
+   "date": "2025-11-26",
+   "type": "B",
+   "exercises": [
+    {
+     "name": "Deadlift",
+     "kg": 30,
+     "reps": [
+      8,
+      8,
+      8
+     ],
+     "rir": null
+    },
+    {
+     "name": "Incline Dumbbell Press",
+     "kg": 8.5,
+     "reps": [
+      8,
+      8,
+      8
+     ],
+     "rir": null
+    },
+    {
+     "name": "Lunges",
+     "kg": 8.5,
+     "reps": [
+      8,
+      8,
+      8
+     ],
+     "rir": null
+    },
+    {
+     "name": "Barbell Curl",
+     "kg": 30,
+     "reps": [
+      8,
+      8,
+      8
+     ],
+     "rir": null
+    }
+   ],
+   "note": "Reverse crunches for core"
+  },
+  {
+   "date": "2025-12-02",
+   "type": "A",
+   "exercises": [
+    {
+     "name": "Barbell Squat",
+     "kg": 30,
+     "reps": [
+      10,
+      10,
+      10
+     ],
+     "rir": null
+    },
+    {
+     "name": "Bench Press",
+     "kg": 30,
+     "reps": [
+      10,
+      10,
+      10
+     ],
+     "rir": null
+    },
+    {
+     "name": "Dumbbell Row",
+     "kg": 8.5,
+     "reps": [
+      10,
+      10,
+      10
+     ],
+     "rir": null
+    },
+    {
+     "name": "Dumbbell Shoulder Press",
+     "kg": 8.5,
+     "reps": [
+      10,
+      10,
+      10
+     ],
+     "rir": null
+    }
+   ]
+  },
+  {
+   "date": "2025-12-19",
+   "type": "A",
+   "exercises": [
+    {
+     "name": "Barbell Squat",
+     "kg": 30,
+     "reps": [
+      10,
+      10,
+      10
+     ],
+     "rir": null
+    },
+    {
+     "name": "Bench Press",
+     "kg": 30,
+     "reps": [
+      10,
+      10,
+      10
+     ],
+     "rir": null
+    }
+   ],
+   "note": "Short session"
+  }
+ ],
+ "body": [
+  {
+   "date": "2025-11-05",
+   "weight_kg": 74.9,
+   "waist_in": 36.5,
+   "hips_in": 38,
+   "chest_in": 38,
+   "arm_in": 14.2,
+   "thigh_in": 21.8
+  },
+  {
+   "date": "2025-12-19",
+   "weight_kg": 76.3
+  }
+ ]
+}
