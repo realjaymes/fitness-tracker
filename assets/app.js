@@ -779,7 +779,7 @@
         <li><b>After each session:</b> weight, reps for each set and reps in reserve for every exercise.</li>
         <li><b>2–3 mornings a week:</b> body weight, before eating. The trend matters, not one reading.</li>
         <li><b>Every 4 weeks:</b> waist, hips, chest, arm and thigh (<a href="${esc(g.measure || "#")}" target="_blank" rel="noopener">how to measure</a>), plus front, side and back photos that stay off this page.</li></ul>
-        <p>Log on the Log tab, or tell Claude "log today" with your numbers. Every Sunday evening a Telegram message scores your week.</p>`),
+        <p>Log on the Log tab, or tell Claude "log today" with your numbers. Turn on Daily reminders on the Log tab to get today's plan each morning. Every Sunday evening a Telegram message scores your week.</p>`),
     ].join("");
   }
 
@@ -858,6 +858,40 @@
     document.getElementById("learn-search").addEventListener("input", e => searchLearn(e.target.value));
   }
 
+  /* ---------- daily reminders (Web Push through the fitness-push Worker, push/worker.js) ---------- */
+  const PUSH = "https://fitness-push.realjaymes.workers.dev";
+  const VAPID = "BO_ZSPIi1t61n9zpwBj8bHY9wO4AIoKDzDrllhpJ6W4hYUboyiOBPgm3wd4m2IKjie8B13W3MJG-7dLmtlSAewc";
+  function wireReminders() {
+    const on = document.getElementById("remind-on"), off = document.getElementById("remind-off"), msg = document.getElementById("remind-msg");
+    const say = (t, cls = "") => { msg.className = "msg " + cls; msg.textContent = t; };
+    const ok = "serviceWorker" in navigator && "PushManager" in window && "Notification" in window;
+    const iphone = /iPhone|iPad|iPod/.test(navigator.userAgent);
+    const standalone = matchMedia("(display-mode: standalone)").matches || navigator.standalone === true;
+    if (DEMO) { on.disabled = true; return say("Reminders are off in the sample view."); }
+    if (!ok) { on.disabled = true; return say(iphone && !standalone ? "Open the tracker from its Home Screen icon to turn these on." : "This browser can't show notifications from a web app."); }
+    const key = Uint8Array.from(atob(VAPID.replace(/-/g, "+").replace(/_/g, "/")), c => c.charCodeAt(0));
+    const reg = navigator.serviceWorker.register("sw.js");
+    const show = sub => { on.hidden = !!sub; off.hidden = !sub; if (sub) say("On for this device.", "ok"); };
+    reg.then(r => r.pushManager.getSubscription()).then(show).catch(() => {});
+    on.addEventListener("click", async () => {
+      try {
+        if (await Notification.requestPermission() !== "granted") throw new Error("Notifications are blocked. Allow them for Fitness in Settings, then try again.");
+        const r = await navigator.serviceWorker.ready;
+        const sub = (await r.pushManager.getSubscription()) || await r.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: key });
+        const res = await fetch(`${PUSH}/subscribe`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ subscription: sub.toJSON() }) });
+        if (!res.ok) throw new Error("The reminder server didn't accept this device. Try again in a minute.");
+        show(sub); say("On. A test notification is on its way.", "ok");
+      } catch (e) { say(e.message, "err"); }
+    });
+    off.addEventListener("click", async () => {
+      try {
+        const sub = await (await navigator.serviceWorker.ready).pushManager.getSubscription();
+        if (sub) { await fetch(`${PUSH}/unsubscribe`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ endpoint: sub.endpoint }) }); await sub.unsubscribe(); }
+        show(null); say("Off for this device.");
+      } catch (e) { say(e.message, "err"); }
+    });
+  }
+
   /* ---------- layout ---------- */
   function wireLayout() {
     if (typeof Chart !== "undefined") Chart.defaults.font.family = getComputedStyle(document.body).fontFamily;
@@ -875,9 +909,9 @@
       Object.values(charts).forEach(c => c.resize());
       window.scrollTo(0, 0);
     };
-    wirePlan(); wireLearn();
+    wirePlan(); wireLearn(); wireReminders();
     document.querySelector(".tabs").addEventListener("click", e => { const b = e.target.closest("[data-go]"); if (b) show(b.dataset.go); });
-    show("today");
+    show(location.hash === "#log" ? "log" : "today");
     matchMedia("(prefers-color-scheme: dark)").addEventListener("change", renderAll);
   }
 

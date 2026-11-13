@@ -10,9 +10,10 @@
 <meta name="theme-color" content="#100a16" media="(prefers-color-scheme: dark)">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Fitness">
+<link rel="manifest" href="manifest.webmanifest">
 <link rel="preconnect" href="https://api.fontshare.com">
 <link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700,900&display=swap">
-<link rel="stylesheet" href="assets/style.css?v=23">
+<link rel="stylesheet" href="assets/style.css?v=24">
 </head>
 <body>
 <header class="top">
@@ -199,6 +200,15 @@
       <button class="btn" type="submit">Save</button>
       <p class="msg" id="form-msg" role="status"></p>
     </form>
+    <div class="card form" id="remind">
+      <h2 style="margin:0">Daily reminders</h2>
+      <p class="sub">A notification at 7:30 with today's session and step target, and one at 8:30 PM only when the day isn't logged.</p>
+      <div style="display:flex;gap:8px">
+        <button class="btn" type="button" id="remind-on">Turn on reminders</button>
+        <button class="btn ghost" type="button" id="remind-off" hidden>Turn off</button>
+      </div>
+      <p class="msg" id="remind-msg" role="status"></p>
+    </div>
     <details class="card">
       <summary class="sub">Phone setup (one time)</summary>
       <div class="form" style="margin-top:10px">
@@ -231,6 +241,6 @@
 </nav>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
-<script src="assets/app.js?v=23"></script>
+<script src="assets/app.js?v=24"></script>
 </body>
 </html>

@@ -1,0 +1,15 @@
+name = "fitness-push"
+main = "worker.js"
+compatibility_date = "2025-09-01"
+workers_dev = true
+
+# 06:30 and 19:30 UTC = 07:30 and 20:30 Lagos (UTC+1, no daylight saving)
+[triggers]
+crons = ["30 6 * * *", "30 19 * * *"]
+
+[[kv_namespaces]]
+binding = "SUBS"
+id = "560a294b56654d21b2968190a0c9850d"
+
+[vars]
+VAPID_PUBLIC = "BO_ZSPIi1t61n9zpwBj8bHY9wO4AIoKDzDrllhpJ6W4hYUboyiOBPgm3wd4m2IKjie8B13W3MJG-7dLmtlSAewc"
