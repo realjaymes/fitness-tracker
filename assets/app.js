@@ -214,7 +214,7 @@
 
     const out = [];
     const daysLeft = before ? 7 : diffDays(TODAY, w.end) + 1;
-    if (before) out.push(status("warn", `Week 1 starts ${fmtW(blockStart())}`, `Aim for Strength A, B and C on Monday, Wednesday and Friday, and ${n0(w.target)} steps a day. Two sessions and four step days pass the week.`));
+    if (before) out.push(status("warn", `Week 1 starts ${fmtW(blockStart())}`, `${firstDay() < blockStart() ? `The lead-in starts ${fmtW(firstDay())}. ` : ""}Aim for three strength sessions on Monday, Wednesday and Friday, and ${n0(w.target)} steps a day. Two sessions and four step days pass the week.`));
     else if (w.passed) out.push(status("good", "Week passed", `${w.strength} strength sessions and ${w.stepDays} days at ${n0(w.target)} steps.`));
     else {
       const needS = Math.max(0, t.pass_sessions - w.strength), needD = Math.max(0, t.pass_step_days - w.stepDays);
@@ -655,14 +655,19 @@
     box.innerHTML = `<div class="frame"><iframe src="https://www.youtube-nocookie.com/embed/${id}?autoplay=1&playsinline=1&rel=0" title="Exercise video" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe></div><div class="player-bar"><a href="${esc(el.dataset.url || el.href)}" target="_blank" rel="noopener">Open in YouTube</a><button type="button" class="linkish" data-close>Close video</button></div>`;
   }
   const STRENGTH_DAYS = [0, 2, 4];
+  // lead-in days before Week 1 (config.block.lead_in, date -> "A" or "walk") start the rotation early
+  const leadIn = () => cfg().block.lead_in || {};
+  const firstDay = () => Object.keys(leadIn()).sort()[0] || blockStart();
   function nextStrength(date) {
-    const from = date >= blockStart() ? blockStart() : "";
+    const from = date >= firstDay() ? firstDay() : "";
     const last = log.sessions.filter(s => /^[ABC]$/.test(s.type) && s.date < date && s.date >= from).at(-1);
     return last ? { A: "B", B: "C", C: "A" }[last.type] : "A";
   }
   function planFor(date) {
     const done = sessionsOn(date).find(s => /^[ABC]$/.test(s.type));
     if (done) return { kind: done.type, done: true };
+    const li = leadIn()[date];
+    if (li) return li === "walk" ? { kind: "walk", done: sessionsOn(date).some(s => LIGHT.has(s.type)) } : { kind: nextStrength(date) };
     const wd = dayIdx(date);
     if (STRENGTH_DAYS.includes(wd)) return { kind: nextStrength(date) };
     if (wd === 6) return { kind: "rest" };
@@ -718,7 +723,7 @@
     <button class="btn" type="button" data-log="rest">Log today</button>`;
   }
   function renderPlan() {
-    const before = TODAY < blockStart(), date = before ? blockStart() : TODAY;
+    const before = TODAY < firstDay(), date = before ? firstDay() : TODAY;
     const auto = planFor(date), kind = planPick || auto.kind;
     const names = { A: "Strength A", B: "Strength B", C: "Strength C", walk: "Walk and mobility", rest: "Rest day" };
     const g = gd();
@@ -894,6 +899,8 @@
     try { log = await load(); }
     catch { document.getElementById("block-line").textContent = "Couldn't load the log. Refresh to try again."; return; }
     TODAY = iso(new Date());
+    // local preview only: ?today=YYYY-MM-DD
+    if (location.hostname === "localhost" && /^\d{4}-\d\d-\d\d$/.test(params.get("today") || "")) TODAY = params.get("today");
     if (DEMO) addDemo();
     if (TODAY < blockStart()) {
       range = "all";
