@@ -693,11 +693,13 @@
       <a href="#" class="linkish howto" data-ch="10" data-anchor="${slug(n)}">How to do it, step by step</a>
       ${!th || vids.length > 1 ? `<div class="vids">${vlinks(th ? vids.slice(1) : vids)}</div>` : ""}</div></li>`; }).join("");
     return `<ol class="steps">
+      <li><b>Eat and drink before.</b> Have a normal meal 2–3 hours before, or a light snack with carbs and protein 30–60 minutes before: bread and eggs, oats with milk, or a banana with Greek yoghurt. Drink a glass of water, and keep a bottle nearby to sip between sets.</li>
       <li><b>Warm up, 5 minutes.</b> Move slowly and with control.<div class="vids">${vlinks(g.warmup)}</div></li>
       <li><b>Lift.</b> A rep is one full movement, down and up. A set is a run of reps without stopping. Do all the sets of one exercise before moving to the next.
         <br>Stop each set when you could still do ${esc(g.rir || "1–3")} more good reps, meaning full movements with control and no pain. Rest ${esc(g.rest || "60–120 seconds")} between sets, and about 2 minutes before the next exercise.
         <ul class="exlist">${ex}</ul></li>
       <li><b>Cool down, 5–10 minutes.</b> Hold each stretch 20–40 seconds. Mild tension, no pain, no bouncing.<div class="vids">${vlinks(g.cooldown)}</div></li>
+      <li><b>Eat and drink after.</b> Have a meal with protein within a few hours, such as rice with chicken or fish and beans. There's no 30-minute rush. Drink water to replace what you sweated.</li>
       <li><b>Log it.</b> The weight, the reps in each set, and how many more good reps you could have done.</li>
     </ol>
     <p class="note">Bad day? The warm-up and the first two exercises still count as a session.</p>
