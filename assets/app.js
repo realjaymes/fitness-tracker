@@ -1,5 +1,5 @@
-/* Fitness Tracker: reads data/log.json and renders the week, rhythm, trends, lifts and body views.
-   ?v=a  single scrolling dashboard   ?v=b  app layout with bottom tabs   ?demo=1  sample data */
+/* Fitness Tracker: reads data/log.json and renders the week, rhythm, trends, lifts and body views
+   as an app with bottom tabs. ?demo=1 loads sample data. */
 (() => {
   "use strict";
 
@@ -11,7 +11,6 @@
   const WEEKDAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
   const params = new URLSearchParams(location.search);
   const DEMO = params.get("demo") === "1";
-  const VARIANT = params.get("v") === "b" ? "b" : "a";
 
   let log, TODAY, range = "block";
   const charts = {};
@@ -638,7 +637,7 @@
 
   /* ---------- layout ---------- */
   function wireLayout() {
-    document.body.classList.add(`v-${VARIANT}`);
+    if (typeof Chart !== "undefined") Chart.defaults.font.family = getComputedStyle(document.body).fontFamily;
     document.querySelectorAll("[data-range]").forEach(b => b.addEventListener("click", () => {
       range = b.dataset.range;
       document.querySelectorAll("[data-range]").forEach(x => x.setAttribute("aria-pressed", String(x === b)));
