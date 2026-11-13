@@ -416,8 +416,8 @@
   function nextHint(name, last) {
     if (!last.kg) return "Add reps or seconds before adding load.";
     if (Math.min(...last.reps) >= 12 && (last.rir == null || last.rir >= 1)) {
-      const step = /^(Barbell|Bench|Deadlift)/.test(name) ? 2.5 : 1;
-      return `All sets hit 12, so go up to about ${kgs(last.kg + step)} for 8.`;
+      if (/^(Barbell|Bench Press|Deadlift)/.test(name)) return `All sets hit 12, so go up to about ${kgs(last.kg + 2.5)} for 8.`;
+      return "All sets hit 12. Use heavier dumbbells if you have them; if not, lower each rep over 3 seconds.";
     }
     return `Stay at ${kgs(last.kg)} and add a rep where you can.`;
   }
@@ -706,7 +706,7 @@
   function walkCard(date) {
     const g = gd(), t = stepTarget(date) || stepTarget(blockStart());
     return `<ol class="steps">
-      <li><b>Walk 20–30 minutes</b> at a brisk pace, where talking is possible but singing isn't.</li>
+      <li><b>Walk 20–30 minutes</b> at a brisk pace, meaning you can talk but not sing.</li>
       <li><b>Reach ${n0(t)} steps</b> across the day. Your watch counts them. Check it in the evening and top up with a short walk if needed.</li>
       <li><b>Mobility, 10 minutes.</b> Pick one video.<div class="vids">${vlinks(g.mobility)}</div></li>
       <li><b>Log it.</b> Steps and sleep from your watch, protein in grams (an egg has about 6 g), and energy from 1 (drained) to 10 (full of energy).</li>
@@ -747,7 +747,7 @@
         <li><b>Tuesday, Thursday, Saturday:</b> a 20–30 minute walk and 10 minutes of mobility.</li>
         <li><b>Sunday:</b> rest from lifting.</li>
         <li><b>Every day:</b> reach your step target, eat about ${t.protein_g} g of protein, sleep ${t.sleep_h} hours or more, and log your numbers.</li></ul>
-        <p>Missed a strength day? Do it the next day. Any three days with a day between them work.</p><figure class="fig"><img src="assets/learn/week.svg" alt="Your week: strength on Monday, Wednesday and Friday, walks on the other days, rest on Sunday" loading="lazy"></figure>`, true),
+        <p>Missed a strength day? Do it the next day and push the rest of the week back one day. Never do strength two days in a row.</p><figure class="fig"><img src="assets/learn/week.svg" alt="Your week: strength on Monday, Wednesday and Friday, walks on the other days, rest on Sunday" loading="lazy"></figure>`, true),
       sec("How a week passes", `<p>A week passes with <b>${t.pass_sessions} or more strength sessions</b> and <b>${t.pass_step_days} or more days at the step target</b>. Three sessions is the plan, two is the pass.</p>
 <figure class="fig"><img src="assets/learn/steps.svg" alt="Daily step target rising from 5,000 to 8,000 over 12 weeks" loading="lazy"></figure>
         <p>Step target: ${steps[0]} a day in weeks 1–2, ${steps[1]} in weeks 3–4, ${steps[2]} in weeks 5–8 and ${steps[3]} in weeks 9–12.</p>
@@ -760,7 +760,7 @@
         <li><b>Rest:</b> ${esc(g.rest || "60–120 seconds")} between sets, long enough to hit your reps again.</li>
         <li><b>Speed:</b> about 2–3 seconds lowering and 1 second lifting. Control beats speed.</li></ul>
         <p><b>Form comes first.</b> Start light. Effort and a burning muscle are fine. Stop a set if you feel sharp pain or pain in a joint.</p>`),
-      sec("When to add weight", `<p>Stay at a weight until <b>every set reaches 12 reps</b> with good form. Then add the smallest jump and go back to 8 reps: 2.5 kg on a barbell, or the next dumbbell pair up.</p>
+      sec("When to add weight", `<p>Stay at a weight until <b>every set reaches 12 reps</b> with good form. Then add 2.5 kg to the barbell and go back to 8 reps. With dumbbells, use a heavier pair if you have one; if not, lower each rep over 3 seconds to make the same weight harder.</p>
         <p>Example: 30 kg for 10, 9, 8 reps. Next time 11, 10, 9. Later 12, 12, 12. Next session, 32.5 kg for 8 each set.</p>
 <figure class="fig"><img src="assets/learn/progression.svg" alt="Add reps until every set reaches 12, then add weight" loading="lazy"></figure>
         <p>You don't need to work this out. The Week tab shows "stay" or "go up" for each exercise from your last log.</p>`),
