@@ -693,13 +693,13 @@
       <a href="#" class="linkish howto" data-ch="10" data-anchor="${slug(n)}">How to do it, step by step</a>
       ${!th || vids.length > 1 ? `<div class="vids">${vlinks(th ? vids.slice(1) : vids)}</div>` : ""}</div></li>`; }).join("");
     return `<ol class="steps">
-      <li><b>Eat and drink before.</b> Have a normal meal 2–3 hours before, or a light snack with carbs and protein 30–60 minutes before: bread and eggs, oats with milk, or a banana with Greek yoghurt. Drink a glass of water, and keep a bottle nearby to sip between sets.</li>
+      <li><b>Eat and drink before.</b> Have a normal meal 2–3 hours before, or a light snack with carbs and protein 30–60 minutes before: bread and eggs, oats with milk, or a banana with Greek yoghurt. Drink a glass of water, and keep a bottle nearby to sip between sets. If you take creatine, have 3–5 g with that water.</li>
       <li><b>Warm up, 5 minutes.</b> Move slowly and with control.<div class="vids">${vlinks(g.warmup)}</div></li>
       <li><b>Lift.</b> A rep is one full movement, down and up. A set is a run of reps without stopping. Do all the sets of one exercise before moving to the next.
         <br>Stop each set when you could still do ${esc(g.rir || "1–3")} more good reps, meaning full movements with control and no pain. Rest ${esc(g.rest || "60–120 seconds")} between sets, and about 2 minutes before the next exercise.
         <ul class="exlist">${ex}</ul></li>
       <li><b>Cool down, 5–10 minutes.</b> Hold each stretch 20–40 seconds. Mild tension, no pain, no bouncing.<div class="vids">${vlinks(g.cooldown)}</div></li>
-      <li><b>Eat and drink after.</b> Have a meal with protein within a few hours, such as rice with chicken or fish and beans. There's no 30-minute rush. Drink water to replace what you sweated.</li>
+      <li><b>Eat and drink after.</b> Have a meal with protein within a few hours, such as rice with chicken or fish and beans. There's no 30-minute rush. Drink water to replace what you sweated. If food won't reach 120 g of protein today, a scoop of whey (about 20–25 g) counts.</li>
       <li><b>Log it.</b> The weight, the reps in each set, and how many more good reps you could have done.</li>
     </ol>
     <p class="note">Bad day? The warm-up and the first two exercises still count as a session.</p>
@@ -708,6 +708,7 @@
   function walkCard(date) {
     const g = gd(), t = stepTarget(date) || stepTarget(blockStart());
     return `<ol class="steps">
+      <li><b>Drink before you go.</b> A glass of water, and take a bottle if it's hot. A 20–30 minute walk needs no special food. If you take creatine, have 3–5 g with that water.</li>
       <li><b>Walk 20–30 minutes</b> at a brisk pace, meaning you can talk but not sing.</li>
       <li><b>Reach ${n0(t)} steps</b> across the day. Your watch counts them. Check it in the evening and top up with a short walk if needed.</li>
       <li><b>Mobility, 10 minutes.</b> Pick one video.<div class="vids">${vlinks(g.mobility)}</div></li>
@@ -718,7 +719,7 @@
   function restCard(date) {
     const t = stepTarget(date) || stepTarget(blockStart());
     return `<ol class="steps">
-      <li><b>Rest from lifting.</b> Muscles rebuild on rest days.</li>
+      <li><b>Rest from lifting.</b> Muscles rebuild on rest days. If you take creatine, still have 3–5 g today.</li>
       <li><b>Still reach ${n0(t)} steps.</b> The step target counts every day.</li>
       <li><b>Get ready for tomorrow:</b> sleep 7 hours or more, and plan tomorrow's protein: eggs, chicken, fish, beans or Greek yoghurt at each meal.</li>
     </ol>
