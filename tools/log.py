@@ -5,6 +5,8 @@ Claude runs this when James says "log today: ...". Standard library only.
 
   log.py day [DATE] --steps 5200 --sleep 7 --protein 110 --energy 7 --note "..."
   log.py session [DATE] --type A --ex "Barbell Squat;32.5;8,8,8;2" --minutes 45
+  log.py meal [DATE] --time 13:10 --desc "Jollof rice and chicken" --kcal 650 --protein 35 --carbs 80 --fat 20 [--shared]
+  log.py meal [DATE] --fix 2 --kcal 600      correct meal 2 of that day (--delete removes it)
   log.py body [DATE] --weight 76.1 --waist 36.5 --neck 15.2 --hips 38 --chest 38 --arm 14.2 --thigh 21.8
   log.py summary [--week N]        this week's scorecard against targets
   log.py next "Barbell Squat"      last performance and the next weight to use
@@ -14,6 +16,8 @@ DATE is YYYY-MM-DD, "today" (default) or "yesterday".
 Exercise spec: "Name;kg;reps;rir" where reps is "8,8,7" or "3x8", kg is 0 for
 bodyweight, and rir (reps in reserve) is optional. A plank uses seconds as reps.
 Logging a day or session that already exists updates it instead of duplicating it.
+Meal numbers are James's own portion: when he shared, pass his half and add
+--shared. A day with meals gets kcal, protein_g, carbs_g and fat_g totals from them.
 """
 
 import argparse
@@ -93,6 +97,8 @@ def cmd_day(log, a):
     if day is None:
         day = {"date": date}
         log["days"].append(day)
+    if day.get("meals") and a.protein is not None:
+        sys.exit(f"{date} has meals logged, so its protein is their total. Change a meal with log.py meal --fix N.")
     for key, val, lo, hi in (("steps", a.steps, 0, 80000), ("sleep_h", a.sleep, 0, 16),
                              ("protein_g", a.protein, 0, 400), ("energy", a.energy, 1, 10)):
         if val is not None:
@@ -100,6 +106,65 @@ def cmd_day(log, a):
     if a.note:
         day["note"] = a.note
     print(f"Day {date}: " + ", ".join(f"{k}={v}" for k, v in day.items() if k != "date"))
+
+
+MEAL_FIELDS = (("kcal", "kcal", 0, 5000), ("protein_g", "protein", 0, 300),
+               ("carbs_g", "carbs", 0, 800), ("fat_g", "fat", 0, 300))
+
+
+def meal_totals(day):
+    for key, _, _, _ in MEAL_FIELDS:
+        vals = [m[key] for m in day["meals"] if m.get(key) is not None]
+        if vals:
+            day[key] = round(sum(vals))
+        else:
+            day.pop(key, None)
+
+
+def cmd_meal(log, a):
+    date = parse_date(a.date)
+    day = next((d for d in log["days"] if d["date"] == date), None)
+    if day is None:
+        day = {"date": date}
+        log["days"].append(day)
+    meals = day.setdefault("meals", [])
+    if a.fix is not None:
+        if not 1 <= a.fix <= len(meals):
+            sys.exit(f"{date} has {len(meals)} meals; there is no meal {a.fix}.")
+        if a.delete:
+            meals.pop(a.fix - 1)
+            m = None
+        else:
+            m = meals[a.fix - 1]
+    else:
+        if not a.desc:
+            sys.exit("A new meal needs --desc.")
+        m = {"time": a.time} if a.time else {}
+        meals.append(m)
+    if m is not None:
+        if a.time:
+            m["time"] = a.time
+        if a.desc:
+            m["desc"] = a.desc
+        if a.shared:
+            m["shared"] = True
+        for key, arg, lo, hi in MEAL_FIELDS:
+            val = getattr(a, arg)
+            if val is not None:
+                m[key] = check(key, round(val), lo, hi)
+    meals.sort(key=lambda x: x.get("time", "99:99"))
+    if not meals:
+        day.pop("meals")
+        for key, _, _, _ in MEAL_FIELDS:
+            day.pop(key, None)
+    else:
+        meal_totals(day)
+    t = log["config"]["targets"]
+    for i, x in enumerate(meals, 1):
+        print(f"  {i}. {x.get('time', '--:--')} {x.get('desc', '')}{' (shared, his half)' if x.get('shared') else ''}: "
+              f"{x.get('kcal', '?')} kcal, P {x.get('protein_g', '?')} g, C {x.get('carbs_g', '?')} g, F {x.get('fat_g', '?')} g")
+    print(f"Day {date}: {day.get('kcal', 0)}/{t.get('kcal', '?')} kcal, protein {day.get('protein_g', 0)}/{t['protein_g']} g, "
+          f"carbs {day.get('carbs_g', 0)}/{t.get('carbs_g', '?')} g, fat {day.get('fat_g', 0)}/{t.get('fat_g', '?')} g")
 
 
 def cmd_session(log, a):
@@ -168,6 +233,8 @@ def cmd_summary(log, a):
     steps = avg([d.get('steps') for d in days])
     print(f"Average steps: {steps:,.0f}" if steps is not None else "Average steps: none logged")
     print(f"Average sleep: {avg([d.get('sleep_h') for d in days])} h (target {t['sleep_h']})")
+    print(f"Average calories: {avg([d.get('kcal') for d in days])} kcal (target {t.get('kcal')}, "
+          f"{sum(1 for d in days if d.get('meals'))} days with meals logged)")
     print(f"Average protein: {avg([d.get('protein_g') for d in days])} g (target {t['protein_g']})")
     print(f"Average energy: {avg([d.get('energy') for d in days])}/10")
     print(f"Days logged: {len(days)}/7")
@@ -232,6 +299,16 @@ def main():
     s.add_argument("--note")
     s.add_argument("--append", action="store_true", help="add exercises instead of replacing them")
 
+    m = sub.add_parser("meal")
+    m.add_argument("date", nargs="?")
+    m.add_argument("--time", help="HH:MM")
+    m.add_argument("--desc")
+    m.add_argument("--shared", action="store_true", help="shared with his wife; numbers are his half")
+    for f in ("kcal", "protein", "carbs", "fat"):
+        m.add_argument(f"--{f}", type=float)
+    m.add_argument("--fix", type=int, help="change meal N of that day instead of adding one")
+    m.add_argument("--delete", action="store_true", help="with --fix, remove that meal")
+
     b = sub.add_parser("body")
     b.add_argument("date", nargs="?")
     for f in ("weight", "waist", "neck", "hips", "chest", "arm", "thigh"):
@@ -248,10 +325,10 @@ def main():
 
     a = p.parse_args()
     log = load()
-    handler = {"day": cmd_day, "session": cmd_session, "body": cmd_body,
+    handler = {"day": cmd_day, "session": cmd_session, "meal": cmd_meal, "body": cmd_body,
                "summary": cmd_summary, "next": cmd_next, "push": cmd_push}[a.cmd]
     handler(log, a)
-    if a.cmd in ("day", "session", "body"):
+    if a.cmd in ("day", "session", "meal", "body"):
         save(log)
 
 

@@ -6,7 +6,7 @@
    "name": "Rhythm Block 1",
    "start": "2026-11-16",
    "weeks": 12,
-   "goal": "Build a weekly workout rhythm and move more",
+   "goal": "Build a weekly workout rhythm, move more and lose about 0.5 kg a week",
    "lead_in": {
     "2026-11-14": "A",
     "2026-11-15": "walk"
@@ -17,7 +17,10 @@
    "pass_sessions": 2,
    "pass_step_days": 4,
    "sleep_h": 7,
+   "kcal": 1850,
    "protein_g": 120,
+   "carbs_g": 200,
+   "fat_g": 62,
    "steps": [
     {
      "from_week": 1,
@@ -372,7 +375,21 @@
   },
   {
    "date": "2026-11-14",
-   "protein_g": 55
+   "protein_g": 55,
+   "meals": [
+    {
+     "time": "08:42",
+     "desc": "Cravings n More: jollof rice, beef, chicken drumstick, okro and ogbono soup",
+     "shared": true,
+     "kcal": 1000,
+     "protein_g": 55,
+     "carbs_g": 85,
+     "fat_g": 45
+    }
+   ],
+   "kcal": 1000,
+   "carbs_g": 85,
+   "fat_g": 45
   }
  ],
  "sessions": [
