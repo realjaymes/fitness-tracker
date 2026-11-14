@@ -547,16 +547,53 @@
     return target;
   }
 
-  async function saveRemote(entry, tries = 2) {
+  // Undo: before a save, keep what the saved date's day, session and body entries were,
+  // so "Undo last save" can put exactly those back without touching anything else.
+  const undoKey = "ft_undo";
+  const getUndo = () => { try { return JSON.parse(localStorage.getItem(undoKey) || "null"); } catch { return null; } };
+  const setUndo = u => { try { u ? localStorage.setItem(undoKey, JSON.stringify(u)) : localStorage.removeItem(undoKey); } catch {} };
+  const clone = o => o == null ? null : JSON.parse(JSON.stringify(o));
+  function snapshot(log0, e) {
+    const u = { label: e.day?.date || e.session?.date || e.body?.date };
+    if (e.day) u.day = { date: e.day.date, prev: clone(log0.days.find(x => x.date === e.day.date)) };
+    if (e.session) u.session = { date: e.session.date, type: e.session.type, prev: clone(log0.sessions.find(x => x.date === e.session.date && x.type === e.session.type)) };
+    if (e.body) u.body = { date: e.body.date, prev: clone(log0.body.find(x => x.date === e.body.date)) };
+    return u;
+  }
+  function restore(target, u) {
+    const put = (list, match, prev) => { const i = list.findIndex(match); if (i >= 0) prev ? list.splice(i, 1, prev) : list.splice(i, 1); else if (prev) list.push(prev); };
+    if (u.day) put(target.days, x => x.date === u.day.date, u.day.prev);
+    if (u.session) put(target.sessions, x => x.date === u.session.date && x.type === u.session.type, u.session.prev);
+    if (u.body) put(target.body, x => x.date === u.body.date, u.body.prev);
+    target.days.sort((a, b) => a.date.localeCompare(b.date));
+    target.sessions.sort((a, b) => a.date.localeCompare(b.date) || a.type.localeCompare(b.type));
+    target.body.sort((a, b) => a.date.localeCompare(b.date));
+    return target;
+  }
+
+  async function writeRemote(change, message, tries = 2) {
     const r = await fetch(`${api}?ref=${BRANCH}`, { headers: headers(), cache: "no-store" });
     if (!r.ok) throw new Error(r.status === 401 ? "The token was rejected. Check it in Phone setup." : `GitHub said ${r.status} when reading the log.`);
     const file = await r.json();
-    const remote = mergeEntry(JSON.parse(b64decode(file.content)), entry);
+    const before = JSON.parse(b64decode(file.content));
+    const undo = change.undo ? null : snapshot(before, change.entry);
+    const remote = change.undo ? restore(before, change.undo) : mergeEntry(before, change.entry);
     const put = await fetch(api, { method: "PUT", headers: headers(), body: JSON.stringify({
-      message: `log ${entry.day?.date || entry.session?.date || entry.body?.date} (from phone)`,
-      content: b64encode(JSON.stringify(remote, null, 1) + "\n"), sha: file.sha, branch: BRANCH }) });
-    if (put.status === 409 && tries > 1) return saveRemote(entry, tries - 1);
+      message, content: b64encode(JSON.stringify(remote, null, 1) + "\n"), sha: file.sha, branch: BRANCH }) });
+    if (put.status === 409 && tries > 1) return writeRemote(change, message, tries - 1);
     if (!put.ok) throw new Error(`GitHub said ${put.status} when saving.`);
+    return { remote, undo };
+  }
+  async function saveRemote(entry) {
+    const { remote, undo } = await writeRemote({ entry }, `log ${entry.day?.date || entry.session?.date || entry.body?.date} (from phone)`);
+    setUndo(undo);
+    return remote;
+  }
+  async function undoRemote() {
+    const u = getUndo();
+    if (!u) throw new Error("There is nothing to undo.");
+    const { remote } = await writeRemote({ undo: u }, `undo log ${u.label} (from phone)`);
+    setUndo(null);
     return remote;
   }
 
@@ -621,9 +658,17 @@
         log = await saveRemote(entry);
         renderAll();
         msg.className = "msg ok"; msg.textContent = "Saved. Everyone else sees it in about a minute.";
-        f.type.value = ""; renderExRows();
+        f.type.value = ""; renderExRows(); showUndo();
       } catch (e) { msg.className = "msg err"; msg.textContent = e.message; }
     });
+    const undoBtn = document.getElementById("undo-save");
+    const showUndo = () => { const u = getUndo(); undoBtn.hidden = !u; if (u) undoBtn.textContent = `Undo last save (${fmt(u.label, { weekday: "short", day: "numeric", month: "short" })})`; };
+    undoBtn.addEventListener("click", async () => {
+      msg.className = "msg"; msg.textContent = "Undoing…";
+      try { log = await undoRemote(); renderAll(); prefill(f.date.value); showUndo(); msg.className = "msg ok"; msg.textContent = "Undone. The log is back to how it was before that save."; }
+      catch (e) { msg.className = "msg err"; msg.textContent = e.message; }
+    });
+    showUndo();
     const tok = document.getElementById("token"), tmsg = document.getElementById("token-msg");
     tok.placeholder = getToken() ? "Token saved in this browser" : "github_pat_…";
     document.getElementById("token-save").addEventListener("click", () => {
