@@ -494,10 +494,11 @@
       if (d.protein_g != null) chips.push(`<span class="chip">${d.protein_g} g protein</span>`);
       if (d.energy != null) chips.push(`<span class="chip">energy ${d.energy}</span>`);
       if (b?.weight_kg != null) chips.push(`<span class="chip">${n1(b.weight_kg)} kg</span>`);
-      if (b?.waist_in != null) chips.push(`<span class="chip">measurements</span>`);
       for (const x of ss) chips.push(`<span class="chip ${isStrength(x) ? "s" : "l"}">${TYPE_NAMES[x.type] || esc(x.type)}${x.minutes ? ` · ${x.minutes} min` : ""}</span>`);
       const ex = ss.flatMap(x => (x.exercises || []).map(e => `${esc(e.name)} ${e.kg ? `${n1(e.kg)} kg` : "BW"} × ${e.reps.join("/")}`));
       const notes = [d.note, ...ss.map(x => x.note)].filter(Boolean).map(esc);
+      const meas = b ? BODY_FIELDS.slice(1).filter(([k]) => b[k] != null).map(([k, n]) => `${n[0].toUpperCase() + n.slice(1)} ${n1(b[k])}`) : [];
+      if (meas.length) ex.unshift(`${meas.join(" · ")} in`);
       return `<div class="row"><div class="d">${fmt(s, { weekday: "short" })}<small>${fmt(s, { day: "numeric", month: "short", year: "2-digit" })}</small></div><div><div class="chips">${chips.join("")}</div>${ex.length ? `<p class="ex">${ex.join(" · ")}</p>` : ""}${notes.length ? `<p class="ex">${notes.join(" · ")}</p>` : ""}</div></div>`;
     }).join("") || `<p class="muted">Nothing logged yet.</p>`;
 
