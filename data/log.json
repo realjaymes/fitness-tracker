@@ -721,7 +721,13 @@
   },
   {
    "date": "2026-11-14",
-   "weight_kg": 80
+   "weight_kg": 80,
+   "waist_in": 37.6,
+   "neck_in": 16.0,
+   "hips_in": 39.2,
+   "chest_in": 37.2,
+   "arm_in": 14.2,
+   "thigh_in": 24.0
   }
  ]
 }
