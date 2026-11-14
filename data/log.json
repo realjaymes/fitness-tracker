@@ -768,6 +768,14 @@
       8
      ],
      "rir": null
+    },
+    {
+     "name": "Plank",
+     "kg": 0,
+     "reps": [
+      30
+     ],
+     "rir": null
     }
    ],
    "note": "Home bar counted as 10 kg, plus 7.5 kg a side"
