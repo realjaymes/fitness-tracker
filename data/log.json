@@ -748,6 +748,16 @@
       8
      ],
      "rir": null
+    },
+    {
+     "name": "Dumbbell Row",
+     "kg": 8.5,
+     "reps": [
+      8,
+      8,
+      8
+     ],
+     "rir": null
     }
    ],
    "note": "Home bar counted as 10 kg, plus 7.5 kg a side"
