@@ -16,7 +16,7 @@
 <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
 <link rel="preconnect" href="https://api.fontshare.com">
 <link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700,900&display=swap">
-<link rel="stylesheet" href="assets/style.css?v=26">
+<link rel="stylesheet" href="assets/style.css?v=27">
 </head>
 <body>
 <header class="top">
@@ -42,6 +42,12 @@
     <p class="sub" id="plan-line"></p>
     <div class="seg plan-pick" role="group" aria-label="Show a session" id="plan-pick"></div>
     <div class="card" id="plan-card"></div>
+  </section>
+
+  <section id="food" data-tab="today" hidden>
+    <h2>Food today</h2>
+    <p class="sub" id="food-line"></p>
+    <div id="food-body"></div>
   </section>
 
   <section id="guide" data-tab="guide">
@@ -150,6 +156,15 @@
   <section id="body" data-tab="progress">
     <h2>Body</h2>
     <div class="tiles" id="body-tiles"></div>
+    <div class="card" id="kcal-card" hidden>
+      <div class="chart-head"><h3>Calories</h3><span class="big" id="kcal-big"></span></div>
+      <div class="legend">
+        <span><i style="background:var(--s1)"></i>Calories</span>
+        <span><i class="ln" style="background:var(--s2)"></i>7-day average</span>
+        <span><i class="dash"></i>Target</span>
+      </div>
+      <div class="chart-box"><canvas id="c-kcal" aria-label="Calories chart"></canvas></div>
+    </div>
     <div class="card">
       <div class="chart-head"><h3>Weight (kg)</h3><span class="big" id="weight-big"></span></div>
       <div class="legend">
@@ -176,7 +191,7 @@
         <label class="f">Date<input type="date" name="date" required></label>
         <label class="f">Steps<input type="number" name="steps" inputmode="numeric" min="0" max="80000"></label>
         <label class="f">Sleep (hours)<input type="number" name="sleep" inputmode="decimal" step="0.25" min="0" max="16"></label>
-        <label class="f">Protein (g)<input type="number" name="protein" inputmode="numeric" min="0" max="400"></label>
+        <label class="f">Protein (g)<input type="number" name="protein" inputmode="numeric" min="0" max="400"><span class="hint" id="protein-hint" hidden>Total of today's meals</span></label>
         <label class="f">Energy (1–10)<input type="number" name="energy" inputmode="numeric" min="1" max="10"></label>
         <label class="f">Session
           <select name="type">
@@ -188,6 +203,19 @@
         </label>
       </div>
       <div id="ex-rows"></div>
+      <details>
+        <summary class="sub">Add a meal</summary>
+        <p class="sub" style="margin:10px 0 0">Easiest: send Claude a photo of the meal or the receipt. If you shared it, log your half.</p>
+        <div class="fgrid" style="margin-top:10px">
+          <label class="f">Time<input type="time" name="mtime"></label>
+          <label class="f">What you ate<input type="text" name="mdesc" maxlength="120"></label>
+          <label class="f">Calories (kcal)<input type="number" name="mkcal" inputmode="numeric" min="0" max="5000"></label>
+          <label class="f">Protein (g)<input type="number" name="mprotein" inputmode="numeric" min="0" max="300"></label>
+          <label class="f">Carbs (g)<input type="number" name="mcarbs" inputmode="numeric" min="0" max="800"></label>
+          <label class="f">Fat (g)<input type="number" name="mfat" inputmode="numeric" min="0" max="300"></label>
+        </div>
+        <label class="check"><input type="checkbox" name="mshared"> Shared, these numbers are my half</label>
+      </details>
       <details>
         <summary class="sub">Body (weigh-in and 4-weekly measurements)</summary>
         <p class="sub" style="margin:10px 0 0">Keep the tape snug but not squeezing, and level with the floor. Measure twice and log the average. <a id="measure-link" href="#" target="_blank" rel="noopener">Watch how to measure</a></p>
@@ -247,6 +275,6 @@
 </nav>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
-<script src="assets/app.js?v=28"></script>
+<script src="assets/app.js?v=29"></script>
 </body>
 </html>

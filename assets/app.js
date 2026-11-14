@@ -116,8 +116,11 @@
       const trained = plan && r() < trainProb;
       const walked = [1, 3, 5].includes(wd) && r() < 0.65;
       const steps = Math.round(3400 + w * 520 + (walked ? 2200 : 0) + (wd === 6 ? -900 : 0) + (r() - 0.5) * 2400);
-      log.days.push({ date: s, steps: Math.max(900, steps), sleep_h: sleep,
-        protein_g: Math.round(85 + r() * 55 + w * 2), energy: Math.max(1, Math.min(10, Math.round(sleep - 1 + r() * 2.5))) });
+      const kcal = 1550 + r() * 650, prot = 85 + r() * 55 + w * 2, shared = r() < 0.3;
+      const meals = [["08:30", "Eggs, bread and tea", 0.25], ["13:30", "Jollof rice and chicken", 0.4], ["19:30", "Beans and plantain", 0.35]].map(([time, desc, f], i) => ({
+        time, desc, ...(i === 1 && shared ? { shared: true } : {}), kcal: Math.round(kcal * f), protein_g: Math.round(prot * f), carbs_g: Math.round(kcal * f * 0.45 / 4), fat_g: Math.round(kcal * f * 0.3 / 9) }));
+      const day = { date: s, steps: Math.max(900, steps), sleep_h: sleep, energy: Math.max(1, Math.min(10, Math.round(sleep - 1 + r() * 2.5))), meals: s === TODAY ? meals.slice(0, 2) : meals };
+      mealTotals(day); log.days.push(day);
       if (trained) {
         log.sessions.push({ date: s, type: plan, minutes: 35 + Math.round(r() * 20), exercises: cfg().program[plan].map(name => {
           const bw = lifts[name] === 0;
@@ -231,7 +234,7 @@
           gap >= 3 ? "A 20-minute minimum session (warm-up and the first two exercises) still counts." : ""));
       }
       const loggedToday = dayMap().has(TODAY);
-      out.push(status(loggedToday ? "good" : "warn", loggedToday ? "Today is logged" : "Today isn't logged yet", loggedToday ? "" : "Tell Claude your steps, sleep, protein and energy, or use the Log form."));
+      out.push(status(loggedToday ? "good" : "warn", loggedToday ? "Today is logged" : "Today isn't logged yet", loggedToday ? "" : "Tell Claude your steps, sleep and energy, send a photo of each meal, or use the Log form."));
     }
     document.getElementById("week-status").innerHTML = out.join("");
   }
@@ -422,7 +425,47 @@
     return `Stay at ${kgs(last.kg)} and add a rep where you can.`;
   }
 
+  /* ---------- render: food ---------- */
+  // A day with meals takes its kcal, protein, carbs and fat totals from them (tools/log.py does the same).
+  const MEAL_KEYS = ["kcal", "protein_g", "carbs_g", "fat_g"];
+  function mealTotals(d) {
+    for (const k of MEAL_KEYS) {
+      const v = (d.meals || []).map(m => m[k]).filter(x => x != null);
+      if (v.length) d[k] = Math.round(v.reduce((a, b) => a + b, 0)); else delete d[k];
+    }
+  }
+  function renderFood() {
+    const t = cfg().targets, d = dayMap().get(TODAY) || {}, meals = d.meals || [];
+    const sec = document.getElementById("food");
+    sec.hidden = !t.kcal;
+    if (!t.kcal) return;
+    const kc = d.kcal ?? 0, pr = d.protein_g ?? 0, left = t.kcal - kc;
+    document.getElementById("food-line").textContent = meals.length
+      ? `${meals.length} meal${meals.length > 1 ? "s" : ""} logged · ${left >= 0 ? `${n0(left)} kcal left` : `${n0(-left)} kcal over`} · ${pr >= t.protein_g ? "protein target hit" : `${n0(t.protein_g - pr)} g protein to go`}`
+      : "Nothing logged yet. Send Claude a photo of each meal, or add it on the Log tab.";
+    const list = meals.length ? `<ul class="meals">${meals.map(m => `<li><span class="mt">${esc(m.time || "")}</span><span class="md">${esc(m.desc || "Meal")}${m.shared ? ' <span class="chip">shared, your half</span>' : ""}</span><span class="mk">${m.kcal != null ? `${n0(m.kcal)} kcal` : ""}${m.protein_g != null ? `<small>${n0(m.protein_g)} g protein</small>` : ""}</span></li>`).join("")}</ul>` : "";
+    const macros = `Carbs ${n0(d.carbs_g ?? 0)} / ${t.carbs_g} g · Fat ${n0(d.fat_g ?? 0)} / ${t.fat_g} g`;
+    const meter = (label, v, tgt, unit) => `<div class="meter"><div class="mh"><b>${label}</b><span>${n0(v)} / ${n0(tgt)}${unit}</span></div><div class="bar${v > tgt ? " over" : ""}"><i style="width:${Math.min(100, v / tgt * 100)}%"></i></div></div>`;
+    document.getElementById("food-body").innerHTML = `<div class="card food">${meter("Calories", kc, t.kcal, " kcal")}${meter("Protein", pr, t.protein_g, " g")}<p class="sub" style="margin:0">${macros}</p>${list}</div>`;
+  }
+
   /* ---------- render: body ---------- */
+  function renderCalories(from, to) {
+    const t = cfg().targets, dm = dayMap(), card = document.getElementById("kcal-card");
+    card.hidden = !t.kcal;
+    if (!t.kcal) return;
+    const kd = log.days.filter(d => d.kcal != null && d.date >= from && d.date <= to);
+    const avg7 = s => { const v = dates(addDays(s, -6), s).map(x => dm.get(x)?.kcal).filter(x => x != null); return v.length ? Math.round(mean(v)) : null; };
+    const lab = s => fmt(s, { day: "numeric", month: "short", year: "2-digit" });
+    const big = document.getElementById("kcal-big");
+    big.textContent = kd.length ? `${n0(mean(kd.map(d => d.kcal)))} kcal avg · target ${n0(t.kcal)}` : "No meals logged yet";
+    chart("c-kcal", { data: { labels: kd.map(d => lab(d.date)), datasets: [
+      bar("Calories", kd.map(d => d.kcal), css("--s1"), { order: 3 }),
+      line("7-day average", kd.map(d => avg7(d.date)), css("--s2"), { order: 1 }),
+      target("Target", kd.map(() => t.kcal)),
+    ] }, options: { scales: { y: { beginAtZero: true, suggestedMax: t.kcal + 400 } } } });
+  }
+
   // US Navy tape method (men's version), inches. A trend number, not a scan.
   function bodyFat(b, h) {
     if (b.waist_in == null || b.neck_in == null || b.waist_in <= b.neck_in) return null;
@@ -463,6 +506,7 @@
     document.getElementById("body-tiles").innerHTML = tiles.join("");
 
     const ws = weights.filter(b => b.date >= from && b.date <= to);
+    renderCalories(from, to);
     const avg7 = ws.map(b => Math.round(mean(ws.filter(x => diffDays(x.date, b.date) >= 0 && diffDays(x.date, b.date) < 7).map(x => x.weight_kg)) * 10) / 10);
     chart("c-weight", { data: { labels: ws.map(b => fmt(b.date, { day: "numeric", month: "short", year: "2-digit" })), datasets: [
       line("Weigh-in", ws.map(b => b.weight_kg), css("--s1"), { showLine: false, pointRadius: 4, order: 2 }),
@@ -491,6 +535,7 @@
       const chips = [];
       if (d.steps != null) chips.push(`<span class="chip">${n0(d.steps)} steps${tgt && d.steps >= tgt ? " ✓" : ""}</span>`);
       if (d.sleep_h != null) chips.push(`<span class="chip">${n1(d.sleep_h)} h sleep</span>`);
+      if (d.kcal != null) chips.push(`<span class="chip">${n0(d.kcal)} kcal</span>`);
       if (d.protein_g != null) chips.push(`<span class="chip">${d.protein_g} g protein</span>`);
       if (d.energy != null) chips.push(`<span class="chip">energy ${d.energy}</span>`);
       if (b?.weight_kg != null) chips.push(`<span class="chip">${n1(b.weight_kg)} kg</span>`);
@@ -498,8 +543,8 @@
       const ex = ss.flatMap(x => (x.exercises || []).map(e => `${esc(e.name)} ${e.kg ? `${n1(e.kg)} kg` : "BW"} × ${e.reps.join("/")}`));
       const notes = [d.note, ...ss.map(x => x.note)].filter(Boolean).map(esc);
       const meas = b ? BODY_FIELDS.slice(1).filter(([k]) => b[k] != null).map(([k, n]) => `${n[0].toUpperCase() + n.slice(1)} ${n1(b[k])}`) : [];
-      if (meas.length) ex.unshift(`${meas.join(" · ")} in`);
-      return `<div class="row"><div class="d">${fmt(s, { weekday: "short" })}<small>${fmt(s, { day: "numeric", month: "short", year: "2-digit" })}</small></div><div><div class="chips">${chips.join("")}</div>${ex.length ? `<p class="ex">${ex.join(" · ")}</p>` : ""}${notes.length ? `<p class="ex">${notes.join(" · ")}</p>` : ""}</div></div>`;
+      const extra = [(d.meals || []).map(m => `${esc(m.time || "")} ${esc(m.desc || "Meal")}${m.shared ? " (shared)" : ""}${m.kcal != null ? ` ${n0(m.kcal)} kcal` : ""}`.trim()).join(" · "), meas.length ? `${meas.join(" · ")} in` : ""].filter(Boolean);
+      return `<div class="row"><div class="d">${fmt(s, { weekday: "short" })}<small>${fmt(s, { day: "numeric", month: "short", year: "2-digit" })}</small></div><div><div class="chips">${chips.join("")}</div>${extra.map(x => `<p class="ex">${x}</p>`).join("")}${ex.length ? `<p class="ex">${ex.join(" · ")}</p>` : ""}${notes.length ? `<p class="ex">${notes.join(" · ")}</p>` : ""}</div></div>`;
     }).join("") || `<p class="muted">Nothing logged yet.</p>`;
 
     const base = cfg().baseline, dmv = dayMap();
@@ -544,6 +589,7 @@
       let d = target.days.find(x => x.date === e.day.date);
       if (!d) { d = { date: e.day.date }; target.days.push(d); }
       Object.assign(d, e.day);
+      if (e.meal) { (d.meals ||= []).push(e.meal); d.meals.sort((a, b) => (a.time || "99:99").localeCompare(b.time || "99:99")); mealTotals(d); }
     }
     if (e.session) {
       const i = target.sessions.findIndex(x => x.date === e.session.date && x.type === e.session.type);
@@ -625,16 +671,25 @@
   function prefill(date) {
     const f = document.getElementById("log-form"), d = dayMap().get(date) || {}, b = log.body.find(x => x.date === date) || {};
     f.steps.value = d.steps ?? ""; f.sleep.value = d.sleep_h ?? ""; f.protein.value = d.protein_g ?? ""; f.energy.value = d.energy ?? "";
+    f.protein.disabled = !!d.meals?.length;
+    document.getElementById("protein-hint").hidden = !d.meals?.length;
     for (const [k, n] of BODY_FIELDS) f[n].value = b[k] ?? "";
   }
 
   function readForm() {
     const f = document.getElementById("log-form"), num = v => v === "" ? null : Number(v), date = f.date.value;
     const entry = {};
-    const day = { steps: num(f.steps.value), sleep_h: num(f.sleep.value), protein_g: num(f.protein.value), energy: num(f.energy.value) };
+    const day = { steps: num(f.steps.value), sleep_h: num(f.sleep.value), protein_g: f.protein.disabled ? null : num(f.protein.value), energy: num(f.energy.value) };
     if (f.note.value.trim()) day.note = f.note.value.trim();
     for (const k of Object.keys(day)) if (day[k] == null) delete day[k];
     if (Object.keys(day).length) entry.day = { date, ...day };
+    const meal = { time: f.mtime.value || undefined, desc: f.mdesc.value.trim() || undefined, shared: f.mshared.checked || undefined,
+      kcal: num(f.mkcal.value), protein_g: num(f.mprotein.value), carbs_g: num(f.mcarbs.value), fat_g: num(f.mfat.value) };
+    for (const k of Object.keys(meal)) if (meal[k] == null) delete meal[k];
+    if (MEAL_KEYS.some(k => meal[k] != null)) {
+      if (!meal.desc) throw new Error("Say what the meal was, for example \"Jollof rice and chicken\".");
+      entry.meal = meal; entry.day ||= { date };
+    }
     const type = f.type.value;
     if (type) {
       const list = cfg().program[type] || [], exercises = [];
@@ -675,6 +730,7 @@
         renderAll();
         msg.className = "msg ok"; msg.textContent = "Saved. Everyone else sees it in about a minute.";
         f.type.value = ""; renderExRows(); showUndo();
+        for (const n of ["mtime", "mdesc", "mkcal", "mprotein", "mcarbs", "mfat"]) f[n].value = ""; f.mshared.checked = false; prefill(f.date.value);
       } catch (e) { msg.className = "msg err"; msg.textContent = e.message; }
     });
     const undoBtn = document.getElementById("undo-save");
@@ -773,7 +829,7 @@
       <li><b>Walk 20–30 minutes</b> at a brisk pace, meaning you can talk but not sing.</li>
       <li><b>Reach ${n0(t)} steps</b> across the day. Your watch counts them. Check it in the evening and top up with a short walk if needed.</li>
       <li><b>Mobility, 10 minutes.</b> Pick one video.<div class="vids">${vlinks(g.mobility)}</div></li>
-      <li><b>Log it.</b> Steps and sleep from your watch, protein in grams (an egg has about 6 g), and energy from 1 (drained) to 10 (full of energy).</li>
+      <li><b>Log it.</b> Steps and sleep from your watch, and energy from 1 (drained) to 10 (full of energy). Send Claude a photo of each meal, or the receipt when you eat out, and say if you shared it.</li>
     </ol>
     <button class="btn" type="button" data-log="walk">Log today</button>`;
   }
@@ -810,7 +866,7 @@
         <li><b>Monday, Wednesday, Friday:</b> a strength session (A, then B, then C). The Week tab shows exactly what to do.</li>
         <li><b>Tuesday, Thursday, Saturday:</b> a 20–30 minute walk and 10 minutes of mobility.</li>
         <li><b>Sunday:</b> rest from lifting.</li>
-        <li><b>Every day:</b> reach your step target, eat about ${t.protein_g} g of protein, sleep ${t.sleep_h} hours or more, and log your numbers.</li></ul>
+        <li><b>Every day:</b> reach your step target, eat about ${n0(t.kcal)} calories with ${t.protein_g} g of protein, sleep ${t.sleep_h} hours or more, and log your numbers.</li></ul>
         <p>Missed a strength day? Do it the next day and push the rest of the week back one day. Never do strength two days in a row.</p><figure class="fig"><img src="assets/learn/week.svg" alt="Your week: strength on Monday, Wednesday and Friday, walks on the other days, rest on Sunday" loading="lazy"></figure>`, true),
       sec("How a week passes", `<p>A week passes with <b>${t.pass_sessions} or more strength sessions</b> and <b>${t.pass_step_days} or more days at the step target</b>. Three sessions is the plan, two is the pass.</p>
 <figure class="fig"><img src="assets/learn/steps.svg" alt="Daily step target rising from 5,000 to 8,000 over 12 weeks" loading="lazy"></figure>
@@ -828,7 +884,8 @@
         <p>Example: 30 kg for 10, 9, 8 reps. Next time 11, 10, 9. Later 12, 12, 12. Next session, 32.5 kg for 8 each set.</p>
 <figure class="fig"><img src="assets/learn/progression.svg" alt="Add reps until every set reaches 12, then add weight" loading="lazy"></figure>
         <p>You don't need to work this out. The Week tab shows "stay" or "go up" for each exercise from your last log.</p>`),
-      sec("Eating", `<ul><li><b>Protein, about ${t.protein_g} g a day,</b> spread over 3–4 meals. Rough amounts: an egg has about 6 g, 100 g of cooked chicken about 30 g, a cup of cooked beans about 15 g, a scoop of whey (a protein powder) about 20–25 g. 100 g of cooked chicken is about the size of your palm.</li>
+      sec("Eating", `<ul><li><b>Calories, about ${n0(t.kcal)} a day,</b> to lose about 0.5 kg a week: ${t.protein_g} g of protein, about ${t.carbs_g} g of carbs and about ${t.fat_g} g of fat. Judge it by the weekly weight average, not one day.</li>
+        <li><b>Protein, about ${t.protein_g} g a day,</b> spread over 3–4 meals. Rough amounts: an egg has about 6 g, 100 g of cooked chicken about 30 g, a cup of cooked beans about 15 g, a scoop of whey (a protein powder) about 20–25 g. 100 g of cooked chicken is about the size of your palm.</li>
         <li><b>Before training:</b> a meal 2–3 hours before, or a light snack with carbs (starchy or sweet foods like bread, oats, plantain or fruit) and protein 30–60 minutes before.</li>
         <li><b>After training:</b> a meal with protein within a few hours. There's no 30-minute rush.</li>
         <li><b>Water:</b> about 2.5–3 litres a day, which is 5 or 6 bottles of 500 ml, more when you sweat. Pale yellow urine means you're drinking enough.</li>
@@ -836,7 +893,7 @@
       sec("Sleep and recovery", `<ul><li>Sleep ${t.sleep_h}–9 hours, at roughly the same times each night.</li>
         <li>No caffeine after 2 pm, screens off 60–90 minutes before bed, and a light dinner 2–3 hours before bed.</li>
         <li>Soreness is normal in the first weeks. Soreness lasting more than 3 days, constant tiredness or stalled lifts mean you need more sleep, food or rest.</li></ul>`),
-      sec("What to log and when", `<ul><li><b>Every day:</b> steps and sleep from your watch, protein in grams (a guess is fine), energy from 1 (drained) to 10 (full of energy).</li>
+      sec("What to log and when", `<ul><li><b>Every day:</b> steps and sleep from your watch, energy from 1 (drained) to 10 (full of energy), and a photo of each meal or receipt sent to Claude, saying if you shared it. Claude estimates calories, protein, carbs and fat. Photo estimates can be 20–30% off, so the weekly weight average is the real check.</li>
         <li><b>After each session:</b> weight, reps for each set and reps in reserve for every exercise.</li>
         <li><b>2–3 mornings a week:</b> body weight, before eating. The trend matters, not one reading.</li>
         <li><b>Every 4 weeks:</b> waist, neck, hips, chest, arm and thigh (<a href="${esc(g.measure || "#")}" target="_blank" rel="noopener">how to measure</a>), plus front, side and back photos that stay off this page.</li></ul>
@@ -977,7 +1034,7 @@
   }
 
   function renderAll() {
-    renderHeader(); renderPlan(); renderGuide(); renderWeek(); renderGrid(); renderInsights();
+    renderHeader(); renderPlan(); renderFood(); renderGuide(); renderWeek(); renderGrid(); renderInsights();
     renderTrends(); renderLifts(); renderBody(); renderHistory();
   }
 

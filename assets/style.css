@@ -323,3 +323,16 @@ mark { background: color-mix(in srgb, var(--accent) 70%, transparent); color: in
 .player-bar a { color: var(--ink); }
 .fig { margin: 12px 0 4px; }
 .fig img { width: 100%; height: auto; display: block; }
+
+/* food */
+.food { display: grid; gap: 12px; }
+.meter .mh { display: flex; justify-content: space-between; gap: 8px; font-size: 14px; }
+.meter .mh span { color: var(--ink-2); font-variant-numeric: tabular-nums; }
+.meter .bar { margin-top: 6px; height: 8px; }
+.bar.over > i { background: var(--critical); }
+.meals { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.meals li { display: grid; grid-template-columns: 44px minmax(0, 1fr) auto; gap: 8px; align-items: baseline; font-size: 13px; padding-top: 8px; border-top: 1px solid var(--ring); }
+.meals .mt { color: var(--muted); font-variant-numeric: tabular-nums; }
+.meals .mk { text-align: right; font-weight: 600; white-space: nowrap; }
+.meals .mk small { display: block; font-weight: 400; color: var(--muted); }
+label.check { display: flex; gap: 8px; align-items: center; font-size: 13px; color: var(--ink-2); margin-top: 10px; }
