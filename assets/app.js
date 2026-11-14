@@ -54,7 +54,7 @@
     const firstData = [log.days[0], log.sessions[0], log.body[0]].filter(Boolean).map(x => x.date).sort()[0] || TODAY;
     if (range === "all") return [firstData, TODAY];
     const end = TODAY < blockEnd() ? TODAY : blockEnd();
-    return [blockStart(), end < blockStart() ? blockStart() : end];
+    return [firstDay(), end < firstDay() ? firstDay() : end];
   }
 
   function weekStats(start) {
@@ -184,7 +184,8 @@
   function renderHeader() {
     const b = cfg().block, w = weekOf(TODAY);
     const el = document.getElementById("block-line");
-    if (TODAY < blockStart()) el.textContent = `${b.name} starts ${fmtW(blockStart())}`;
+    if (TODAY < firstDay()) el.textContent = `${b.name} starts ${fmtW(firstDay())}`;
+    else if (TODAY < blockStart()) el.textContent = `${b.name} · Lead-in, week 1 starts ${fmtW(blockStart())}`;
     else if (TODAY > blockEnd()) el.textContent = `${b.name} finished ${fmtY(blockEnd())}`;
     else el.textContent = `${b.name} · Week ${w} of ${b.weeks}`;
     const banner = document.getElementById("banner");
@@ -243,6 +244,20 @@
   function renderGrid() {
     const dm = dayMap(), weeks = cfg().block.weeks;
     let html = `<span></span>${WEEKDAYS.map(d => `<span class="hd">${d[0]}</span>`).join("")}<span></span>`;
+    // The lead-in days before week 1 get their own row, so day 1 shows on the grid.
+    if (firstDay() < blockStart()) {
+      const start = addDays(blockStart(), -7);
+      html += `<span class="wk">In</span>`;
+      for (let i = 0; i < 7; i++) {
+        const s = addDays(start, i);
+        if (s < firstDay()) { html += `<span></span>`; continue; }
+        const ss = sessionsOn(s), d = dm.get(s), future = s > TODAY;
+        const cls = future ? "future" : ss.some(isStrength) ? "strength" : ss.some(x => LIGHT.has(x.type)) ? "light" : "";
+        const tip = `${fmtW(s)}: ${ss.length ? ss.map(x => TYPE_NAMES[x.type] || x.type).join(", ") : "no session"}${d?.steps != null ? `, ${n0(d.steps)} steps` : ""}`;
+        html += `<span class="cell ${cls}${s === TODAY ? " today" : ""}" title="${esc(tip)}" aria-label="${esc(tip)}"></span>`;
+      }
+      html += `<span></span>`;
+    }
     for (let w = 1; w <= weeks; w++) {
       const start = addDays(blockStart(), (w - 1) * 7);
       html += `<span class="wk">W${w}</span>`;
@@ -265,7 +280,7 @@
   function renderInsights() {
     const items = [], dm = dayMap(), t = cfg().targets;
     const add = (ic, text) => items.push(`<li><span class="ic">${ic}</span><span>${text}</span></li>`);
-    const started = TODAY >= blockStart();
+    const started = TODAY >= firstDay();
 
     const lastS = log.sessions.filter(x => isStrength(x) && x.date <= TODAY).sort((a, b) => a.date.localeCompare(b.date)).at(-1);
     if (started && lastS) {
@@ -308,7 +323,7 @@
     if (started) {
       let best = null;
       for (const name of allLiftNames()) {
-        const h = liftHistory(name, blockStart(), TODAY).filter(x => x.kg > 0);
+        const h = liftHistory(name, firstDay(), TODAY).filter(x => x.kg > 0);
         if (h.length < 2) continue;
         const gain = h.at(-1).kg - h[0].kg;
         if (gain > 0 && (!best || gain / h[0].kg > best.rel)) best = { name, from: h[0].kg, to: h.at(-1).kg, rel: gain / h[0].kg };
@@ -1057,7 +1072,7 @@
     // local preview only: ?today=YYYY-MM-DD
     if (location.hostname === "localhost" && /^\d{4}-\d\d-\d\d$/.test(params.get("today") || "")) TODAY = params.get("today");
     if (DEMO) addDemo();
-    if (TODAY < blockStart()) {
+    if (TODAY < firstDay()) {
       range = "all";
       document.querySelectorAll("[data-range]").forEach(x => x.setAttribute("aria-pressed", String(x.dataset.range === "all")));
     }
