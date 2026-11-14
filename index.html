@@ -16,7 +16,7 @@
 <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
 <link rel="preconnect" href="https://api.fontshare.com">
 <link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700,900&display=swap">
-<link rel="stylesheet" href="assets/style.css?v=25">
+<link rel="stylesheet" href="assets/style.css?v=26">
 </head>
 <body>
 <header class="top">
@@ -190,13 +190,15 @@
       <div id="ex-rows"></div>
       <details>
         <summary class="sub">Body (weigh-in and 4-weekly measurements)</summary>
+        <p class="sub" style="margin:10px 0 0">Keep the tape snug but not squeezing, and level with the floor. Measure twice and log the average. <a id="measure-link" href="#" target="_blank" rel="noopener">Watch how to measure</a></p>
         <div class="fgrid" style="margin-top:10px">
-          <label class="f">Weight (kg)<input type="number" name="weight" inputmode="decimal" step="0.1"></label>
-          <label class="f">Waist (in)<input type="number" name="waist" inputmode="decimal" step="0.1"></label>
-          <label class="f">Hips (in)<input type="number" name="hips" inputmode="decimal" step="0.1"></label>
-          <label class="f">Chest (in)<input type="number" name="chest" inputmode="decimal" step="0.1"></label>
-          <label class="f">Arm (in)<input type="number" name="arm" inputmode="decimal" step="0.1"></label>
-          <label class="f">Thigh (in)<input type="number" name="thigh" inputmode="decimal" step="0.1"></label>
+          <label class="f">Weight (kg)<span class="hint">Morning, after the toilet, before food</span><input type="number" name="weight" inputmode="decimal" step="0.1"></label>
+          <label class="f">Waist (in)<span class="hint">At the belly button, relaxed, after a normal breath out</span><input type="number" name="waist" inputmode="decimal" step="0.1"></label>
+          <label class="f">Neck (in)<span class="hint">Just below the Adam's apple, looking straight ahead</span><input type="number" name="neck" inputmode="decimal" step="0.1"></label>
+          <label class="f">Hips (in)<span class="hint">Widest part of the bum, feet together</span><input type="number" name="hips" inputmode="decimal" step="0.1"></label>
+          <label class="f">Chest (in)<span class="hint">Across the nipples, arms down, after a breath out</span><input type="number" name="chest" inputmode="decimal" step="0.1"></label>
+          <label class="f">Arm (in)<span class="hint">Biggest part, relaxed, same arm each time</span><input type="number" name="arm" inputmode="decimal" step="0.1"></label>
+          <label class="f">Thigh (in)<span class="hint">Widest part, just below the bum, same leg each time</span><input type="number" name="thigh" inputmode="decimal" step="0.1"></label>
         </div>
       </details>
       <label class="f">Note<input type="text" name="note" maxlength="200"></label>
@@ -245,6 +247,6 @@
 </nav>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
-<script src="assets/app.js?v=25"></script>
+<script src="assets/app.js?v=26"></script>
 </body>
 </html>

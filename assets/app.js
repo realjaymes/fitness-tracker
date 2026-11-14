@@ -132,7 +132,7 @@
     }
     for (const [i, waist] of [[0, 36.5], [28, 36.1]]) {
       const s = addDays(start, i), b = log.body.find(x => x.date === s) || (log.body.push({ date: s }), log.body.at(-1));
-      Object.assign(b, { waist_in: waist, hips_in: 38, chest_in: 38.2, arm_in: 14.3, thigh_in: 21.7 });
+      Object.assign(b, { waist_in: waist, neck_in: 15.2, hips_in: 38, chest_in: 38.2, arm_in: 14.3, thigh_in: 21.7 });
     }
     log.days.sort((a, b) => a.date.localeCompare(b.date));
     log.body.sort((a, b) => a.date.localeCompare(b.date));
@@ -423,6 +423,11 @@
   }
 
   /* ---------- render: body ---------- */
+  // US Navy tape method (men's version), inches. A trend number, not a scan.
+  function bodyFat(b, h) {
+    if (b.waist_in == null || b.neck_in == null || b.waist_in <= b.neck_in) return null;
+    return 86.010 * Math.log10(b.waist_in - b.neck_in) - 70.041 * Math.log10(h * 100 / 2.54) + 36.76;
+  }
   function renderBody() {
     const [from, to] = rangeBounds(), h = cfg().height_m;
     const weights = log.body.filter(b => b.weight_kg != null);
@@ -446,6 +451,12 @@
       const whtr = lastM.waist_in * 2.54 / (h * 100);
       const [k, lab] = whtr < 0.5 ? ["good", "Under 0.5"] : whtr < 0.6 ? ["warn", "Increased (0.5+)"] : ["bad", "High (0.6+)"];
       tiles.push(`<div class="tile"><div class="label">Waist-to-height</div><div class="value">${whtr.toFixed(2)}</div><div class="status ${k}" style="font-size:12px;margin-top:4px"><span class="dot"></span>${lab}</div><div class="meta">Goal: waist under half your height (${n1(h * 100 / 2 / 2.54)} in)</div></div>`);
+      const fats = meas.filter(b => b.neck_in != null).map(b => ({ date: b.date, pct: bodyFat(b, h) })).filter(x => x.pct != null), fat = fats.at(-1);
+      if (fat) {
+        const [k, lab] = fat.pct < 18 ? ["good", "Fit range (under 18%)"] : fat.pct < 25 ? ["warn", "Average (18–24%)"] : ["bad", "High (25%+)"];
+        const prev = fats.at(-2), d = prev && fat.pct - prev.pct;
+        tiles.push(`<div class="tile"><div class="label">Body fat (estimate)</div><div class="value">${n1(fat.pct)}<small>%</small></div><div class="status ${k}" style="font-size:12px;margin-top:4px"><span class="dot"></span>${lab}</div><div class="meta">${prev ? `${d >= 0 ? "+" : ""}${n1(d)} points since ${fmtY(prev.date)}` : `From waist, neck and height · ${fmtY(fat.date)}`}. Tape estimate, about ±3–4 points</div></div>`);
+      }
       const due = addDays(lastM.date, 28);
       tiles.push(tile("Next measurements", due <= TODAY ? "Due" : fmt(due), "", `Every 4 weeks · last ${fmtY(lastM.date)}`));
     }
@@ -466,8 +477,8 @@
 
     const all = log.body.filter(b => b.waist_in != null || b.hips_in != null).slice().reverse();
     const c = v => v == null ? "–" : n1(v);
-    document.getElementById("measure-table").innerHTML = all.length ? `<thead><tr><th>Date</th><th class="num">Weight</th><th class="num">Waist</th><th class="num">Hips</th><th class="num">Chest</th><th class="num">Arm</th><th class="num">Thigh</th></tr></thead><tbody>` +
-      all.map(b => `<tr><td>${fmtY(b.date)}</td><td class="num">${c(b.weight_kg)}</td><td class="num">${c(b.waist_in)}</td><td class="num">${c(b.hips_in)}</td><td class="num">${c(b.chest_in)}</td><td class="num">${c(b.arm_in)}</td><td class="num">${c(b.thigh_in)}</td></tr>`).join("") + "</tbody>"
+    document.getElementById("measure-table").innerHTML = all.length ? `<thead><tr><th>Date</th><th class="num">Weight</th><th class="num">Waist</th><th class="num">Neck</th><th class="num">Body fat</th><th class="num">Hips</th><th class="num">Chest</th><th class="num">Arm</th><th class="num">Thigh</th></tr></thead><tbody>` +
+      all.map(b => `<tr><td>${fmtY(b.date)}</td><td class="num">${c(b.weight_kg)}</td><td class="num">${c(b.waist_in)}</td><td class="num">${c(b.neck_in)}</td><td class="num">${bodyFat(b, h) == null ? "–" : `${n1(bodyFat(b, h))}%`}</td><td class="num">${c(b.hips_in)}</td><td class="num">${c(b.chest_in)}</td><td class="num">${c(b.arm_in)}</td><td class="num">${c(b.thigh_in)}</td></tr>`).join("") + "</tbody>"
       : `<tbody><tr><td class="muted">No measurements yet.</td></tr></tbody>`;
   }
 
@@ -635,7 +646,7 @@
       if (f.minutes?.value) entry.session.minutes = Number(f.minutes.value);
     }
     const body = {};
-    for (const [k, n] of [["weight_kg", "weight"], ["waist_in", "waist"], ["hips_in", "hips"], ["chest_in", "chest"], ["arm_in", "arm"], ["thigh_in", "thigh"]])
+    for (const [k, n] of [["weight_kg", "weight"], ["waist_in", "waist"], ["neck_in", "neck"], ["hips_in", "hips"], ["chest_in", "chest"], ["arm_in", "arm"], ["thigh_in", "thigh"]])
       if (f[n].value !== "") body[k] = Number(f[n].value);
     if (Object.keys(body).length) entry.body = { date, ...body };
     if (!Object.keys(entry).length) throw new Error("Nothing to save yet.");
@@ -645,6 +656,7 @@
   function wireForm() {
     const f = document.getElementById("log-form"), msg = document.getElementById("form-msg");
     f.date.value = iso(new Date());
+    if (gd().measure) document.getElementById("measure-link").href = gd().measure;
     prefill(f.date.value);
     f.date.addEventListener("change", () => prefill(f.date.value));
     f.type.addEventListener("change", renderExRows);
@@ -823,7 +835,7 @@
       sec("What to log and when", `<ul><li><b>Every day:</b> steps and sleep from your watch, protein in grams (a guess is fine), energy from 1 (drained) to 10 (full of energy).</li>
         <li><b>After each session:</b> weight, reps for each set and reps in reserve for every exercise.</li>
         <li><b>2–3 mornings a week:</b> body weight, before eating. The trend matters, not one reading.</li>
-        <li><b>Every 4 weeks:</b> waist, hips, chest, arm and thigh (<a href="${esc(g.measure || "#")}" target="_blank" rel="noopener">how to measure</a>), plus front, side and back photos that stay off this page.</li></ul>
+        <li><b>Every 4 weeks:</b> waist, neck, hips, chest, arm and thigh (<a href="${esc(g.measure || "#")}" target="_blank" rel="noopener">how to measure</a>), plus front, side and back photos that stay off this page.</li></ul>
         <p>Log on the Log tab, or tell Claude "log today" with your numbers. Turn on Daily reminders on the Log tab to get today's plan each morning. Every Sunday evening a Telegram message scores your week.</p>`),
     ].join("");
   }

@@ -5,7 +5,7 @@ Claude runs this when James says "log today: ...". Standard library only.
 
   log.py day [DATE] --steps 5200 --sleep 7 --protein 110 --energy 7 --note "..."
   log.py session [DATE] --type A --ex "Barbell Squat;32.5;8,8,8;2" --minutes 45
-  log.py body [DATE] --weight 76.1 --waist 36.5 --hips 38 --chest 38 --arm 14.2 --thigh 21.8
+  log.py body [DATE] --weight 76.1 --waist 36.5 --neck 15.2 --hips 38 --chest 38 --arm 14.2 --thigh 21.8
   log.py summary [--week N]        this week's scorecard against targets
   log.py next "Barbell Squat"      last performance and the next weight to use
   log.py push "message"            commit data/log.json and push
@@ -132,7 +132,8 @@ def cmd_body(log, a):
     if b is None:
         b = {"date": date}
         log["body"].append(b)
-    fields = (("weight_kg", a.weight, 35, 200), ("waist_in", a.waist, 20, 70), ("hips_in", a.hips, 20, 70),
+    fields = (("weight_kg", a.weight, 35, 200), ("waist_in", a.waist, 20, 70), ("neck_in", a.neck, 10, 25),
+              ("hips_in", a.hips, 20, 70),
               ("chest_in", a.chest, 20, 70), ("arm_in", a.arm, 6, 30), ("thigh_in", a.thigh, 10, 45))
     for key, val, lo, hi in fields:
         if val is not None:
@@ -233,7 +234,7 @@ def main():
 
     b = sub.add_parser("body")
     b.add_argument("date", nargs="?")
-    for f in ("weight", "waist", "hips", "chest", "arm", "thigh"):
+    for f in ("weight", "waist", "neck", "hips", "chest", "arm", "thigh"):
         b.add_argument(f"--{f}", type=float)
 
     sm = sub.add_parser("summary")
