@@ -391,7 +391,9 @@
    "carbs_g": 85,
    "fat_g": 45,
    "steps": 1000,
-   "note": "Steps estimated by James (watch did not record accurately)"
+   "note": "Steps estimated by James (watch did not record accurately)",
+   "sleep_h": 9,
+   "energy": 5
   }
  ],
  "sessions": [
@@ -801,11 +803,11 @@
    "date": "2026-11-14",
    "weight_kg": 80,
    "waist_in": 37.6,
-   "neck_in": 16.0,
+   "neck_in": 16,
    "hips_in": 39.2,
    "chest_in": 37.2,
    "arm_in": 14.2,
-   "thigh_in": 24.0
+   "thigh_in": 24
   }
  ]
 }
