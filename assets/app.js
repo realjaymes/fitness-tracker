@@ -494,6 +494,7 @@
       if (d.protein_g != null) chips.push(`<span class="chip">${d.protein_g} g protein</span>`);
       if (d.energy != null) chips.push(`<span class="chip">energy ${d.energy}</span>`);
       if (b?.weight_kg != null) chips.push(`<span class="chip">${n1(b.weight_kg)} kg</span>`);
+      if (b?.waist_in != null) chips.push(`<span class="chip">measurements</span>`);
       for (const x of ss) chips.push(`<span class="chip ${isStrength(x) ? "s" : "l"}">${TYPE_NAMES[x.type] || esc(x.type)}${x.minutes ? ` · ${x.minutes} min` : ""}</span>`);
       const ex = ss.flatMap(x => (x.exercises || []).map(e => `${esc(e.name)} ${e.kg ? `${n1(e.kg)} kg` : "BW"} × ${e.reps.join("/")}`));
       const notes = [d.note, ...ss.map(x => x.note)].filter(Boolean).map(esc);
@@ -619,9 +620,11 @@
     }).join("") + `<p class="sub">Leave reps empty to skip an exercise. Reps like 10,10,9. RIR is reps left in the tank.</p>`;
   }
 
+  const BODY_FIELDS = [["weight_kg", "weight"], ["waist_in", "waist"], ["neck_in", "neck"], ["hips_in", "hips"], ["chest_in", "chest"], ["arm_in", "arm"], ["thigh_in", "thigh"]];
   function prefill(date) {
-    const f = document.getElementById("log-form"), d = dayMap().get(date) || {};
+    const f = document.getElementById("log-form"), d = dayMap().get(date) || {}, b = log.body.find(x => x.date === date) || {};
     f.steps.value = d.steps ?? ""; f.sleep.value = d.sleep_h ?? ""; f.protein.value = d.protein_g ?? ""; f.energy.value = d.energy ?? "";
+    for (const [k, n] of BODY_FIELDS) f[n].value = b[k] ?? "";
   }
 
   function readForm() {
@@ -646,7 +649,7 @@
       if (f.minutes?.value) entry.session.minutes = Number(f.minutes.value);
     }
     const body = {};
-    for (const [k, n] of [["weight_kg", "weight"], ["waist_in", "waist"], ["neck_in", "neck"], ["hips_in", "hips"], ["chest_in", "chest"], ["arm_in", "arm"], ["thigh_in", "thigh"]])
+    for (const [k, n] of BODY_FIELDS)
       if (f[n].value !== "") body[k] = Number(f[n].value);
     if (Object.keys(body).length) entry.body = { date, ...body };
     if (!Object.keys(entry).length) throw new Error("Nothing to save yet.");
@@ -1002,6 +1005,12 @@
     }
     wireForm();
     renderAll();
+    // A Home Screen app resumes without reloading, so fetch the log again when it comes back into view
+    let loadedAt = Date.now();
+    document.addEventListener("visibilitychange", async () => {
+      if (document.visibilityState !== "visible" || DEMO || Date.now() - loadedAt < 60000) return;
+      try { log = await load(); loadedAt = Date.now(); if (!params.get("today")) TODAY = iso(new Date()); renderAll(); } catch {}
+    });
   }
   init();
 })();
