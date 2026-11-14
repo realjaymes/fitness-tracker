@@ -731,7 +731,7 @@
    "exercises": [
     {
      "name": "Barbell Squat",
-     "kg": 15,
+     "kg": 25,
      "reps": [
       8,
       8,
@@ -740,7 +740,7 @@
      "rir": null
     }
    ],
-   "note": "Squat kg is plates only (7.5 kg a side); bar weight to add"
+   "note": "Home bar counted as 10 kg, plus 7.5 kg a side"
   }
  ],
  "body": [
