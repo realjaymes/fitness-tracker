@@ -397,7 +397,7 @@
   },
   {
    "date": "2026-11-15",
-   "steps": 6000,
+   "steps": 5600,
    "meals": [
     {
      "desc": "One wrap of eba with egusi soup, plus half a piece of chicken and half a piece of beef (the meat was shared)",
@@ -411,7 +411,8 @@
    "protein_g": 40,
    "carbs_g": 92,
    "fat_g": 45,
-   "energy": 3
+   "energy": 3,
+   "sleep_h": 9
   }
  ],
  "sessions": [
