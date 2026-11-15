@@ -803,6 +803,12 @@
   },
   {
    "date": "2026-11-15",
+   "type": "mobility",
+   "exercises": [],
+   "note": "Light stretching only, focused on the legs"
+  },
+  {
+   "date": "2026-11-15",
    "type": "walk",
    "exercises": []
   }
