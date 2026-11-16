@@ -464,17 +464,18 @@
    "steps": 7902,
    "meals": [
     {
-     "desc": "One wrap of eba with egusi soup, plus half a piece of chicken and half a piece of beef (the meat was shared)",
-     "kcal": 930,
-     "protein_g": 40,
-     "carbs_g": 92,
-     "fat_g": 45
+     "desc": "Cravings n More: one wrap of eba, half a portion of egusi soup, half a piece of chicken and half a piece of beef (soup and meat shared)",
+     "kcal": 760,
+     "protein_g": 27,
+     "carbs_g": 90,
+     "fat_g": 30,
+     "shared": true
     }
    ],
-   "kcal": 930,
-   "protein_g": 40,
-   "carbs_g": 92,
-   "fat_g": 45,
+   "kcal": 760,
+   "protein_g": 27,
+   "carbs_g": 90,
+   "fat_g": 30,
    "energy": 3,
    "sleep_h": 9
   }
