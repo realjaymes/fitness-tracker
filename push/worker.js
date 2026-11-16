@@ -5,7 +5,8 @@
 // send it as a Web Push notification to every subscribed device.
 //   morning: today's session (Strength A, B or C with its exercises, a walk with
 //            mobility, or rest), the step target, and a line when the last strength
-//            day had no session.
+//            day had no session. When the last full body measurement is 28 or more days
+//            old, it opens with a measurement reminder, every morning until one is logged.
 //   evening: only when today's session or today's steps are not logged yet.
 // The day plan copies planFor() in assets/app.js, so the notification and the Week tab agree.
 //
@@ -20,6 +21,7 @@ const LOG_URL = "https://raw.githubusercontent.com/realjaymes/fitness-tracker/ma
 const APP_URL = "https://realjaymes.github.io/fitness-tracker/";
 const ORIGINS = ["https://realjaymes.github.io", "http://localhost:8011", "http://127.0.0.1:8011"];
 const MAX_SUBS = 5;
+const MEASURE_EVERY_DAYS = 28; // full body measurements every 4 weeks, counted from the last one logged
 const STRENGTH_DAYS = [0, 2, 4]; // Monday, Wednesday, Friday (Monday = 0)
 const LIGHT = new Set(["walk", "mobility", "cardio", "hiit", "other"]);
 const NEXT = { A: "B", B: "C", C: "A" };
@@ -80,6 +82,9 @@ export function buildMessage(log, slot, today) {
       title = "Today: rest";
       body = `Step target ${target.toLocaleString("en-US")}.${weekday(today) === 6 ? " The weekly review comes at 19:15." : ""}`;
     }
+    const measured = log.body.filter(b => b.waist_in && b.date <= today).map(b => b.date).sort().pop();
+    if (measured && daysBetween(measured, today) >= MEASURE_EVERY_DAYS)
+      body = `Measurements are due: weigh in, measure waist, neck, hips, chest, arm and thigh, and take front, side and back photos. ${body}`;
     return { title, body: `${label}. ${body}`, url: APP_URL, tag: `fitness-${today}` };
   }
 
