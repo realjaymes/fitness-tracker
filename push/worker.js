@@ -1,7 +1,7 @@
 // Fitness push: daily notifications for the fitness tracker's Home Screen web app.
 //
-// Cloudflare Worker "fitness-push". Three cron triggers (06:30, 16:00 and 19:30 UTC, which are
-// 07:30, 17:00 and 20:30 Lagos) read the tracker's public data/log.json, write the message and
+// Cloudflare Worker "fitness-push". One cron trigger, `30 6,16,19 * * *` (06:30, 16:30 and 19:30 UTC, which are
+// 07:30, 17:30 and 20:30 Lagos) read the tracker's public data/log.json, write the message and
 // send it as a Web Push notification to every subscribed device.
 //   morning: today's session (Strength A, B or C with its exercises, a walk with
 //            mobility, or rest), the step target, and a line when the last strength
@@ -24,7 +24,7 @@ const APP_URL = "https://realjaymes.github.io/fitness-tracker/";
 const ORIGINS = ["https://realjaymes.github.io", "http://localhost:8011", "http://127.0.0.1:8011"];
 const MAX_SUBS = 5;
 const WEIGH_DAYS = [0, 2, 4]; // weigh-in nudge on Monday, Wednesday and Friday mornings
-const PROTEIN_CHECK_G = 60; // the 17:00 check sends only when logged protein is under this
+const PROTEIN_CHECK_G = 60; // the 17:30 check sends only when logged protein is under this
 const MEASURE_EVERY_DAYS = 28; // full body measurements every 4 weeks, counted from the last one logged
 const STRENGTH_DAYS = [0, 2, 4]; // Monday, Wednesday, Friday (Monday = 0)
 const LIGHT = new Set(["walk", "mobility", "cardio", "hiit", "other"]);
@@ -214,7 +214,7 @@ export default {
       subs = subs.filter(x => x.endpoint !== s.endpoint);
       subs.push({ endpoint: s.endpoint, keys: { p256dh: s.keys.p256dh, auth: s.keys.auth }, added: new Date().toISOString() });
       await putSubs(env, subs.slice(-MAX_SUBS));
-      const r = await pushTo(subs[subs.length - 1], { title: "Fitness reminders are on", body: "You'll get today's plan at 7:30, a protein check at 5 PM when you're short, and a reminder at 8:30 PM when the day isn't logged.", url: APP_URL, tag: "fitness-welcome" }, env).catch(e => ({ status: 0, text: String(e) }));
+      const r = await pushTo(subs[subs.length - 1], { title: "Fitness reminders are on", body: "You'll get today's plan at 7:30, a protein check at 5:30 PM when you're short, and a reminder at 8:30 PM when the day isn't logged.", url: APP_URL, tag: "fitness-welcome" }, env).catch(e => ({ status: 0, text: String(e) }));
       return json(req, { ok: true, devices: Math.min(subs.length, MAX_SUBS), welcome: r.status });
     }
 
@@ -227,7 +227,9 @@ export default {
   },
 
   async scheduled(event, env, ctx) {
-    const slot = { "30 6 * * *": "morning", "0 16 * * *": "afternoon" }[event.cron] || "evening";
+    // One cron trigger fires three times a day (the free plan caps cron triggers per account); the UTC hour picks the slot.
+    const slot = { 6: "morning", 16: "afternoon", 19: "evening" }[new Date(event.scheduledTime).getUTCHours()];
+    if (!slot) return;
     ctx.waitUntil(runSlot(slot, env).then(r => console.log(slot, JSON.stringify(r))));
   },
 };
