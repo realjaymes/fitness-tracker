@@ -1,12 +1,14 @@
 // Fitness push: daily notifications for the fitness tracker's Home Screen web app.
 //
-// Cloudflare Worker "fitness-push". Two cron triggers (06:30 and 19:30 UTC, which are
-// 07:30 and 20:30 Lagos) read the tracker's public data/log.json, write the message and
+// Cloudflare Worker "fitness-push". Three cron triggers (06:30, 16:00 and 19:30 UTC, which are
+// 07:30, 17:00 and 20:30 Lagos) read the tracker's public data/log.json, write the message and
 // send it as a Web Push notification to every subscribed device.
 //   morning: today's session (Strength A, B or C with its exercises, a walk with
 //            mobility, or rest), the step target, and a line when the last strength
 //            day had no session. When the last full body measurement is 28 or more days
 //            old, it opens with a measurement reminder, every morning until one is logged.
+//            Otherwise on Monday, Wednesday and Friday it opens with a weigh-in nudge.
+//   afternoon: a protein check, only when today's logged meals hold under 60 g of protein.
 //   evening: only when today's session or today's steps are not logged yet.
 // The day plan copies planFor() in assets/app.js, so the notification and the Week tab agree.
 //
@@ -14,13 +16,15 @@
 //   POST /subscribe     {subscription}  from the tracker page (origin-checked), max 5 devices; sends a welcome notification
 //   POST /unsubscribe   {endpoint}
 //   GET  /latest        the last message sent (the service worker's fallback when a push has no payload)
-//   POST /send?slot=morning|evening|test   header X-Admin-Key: runs a slot now (test sends a fixed message)
+//   POST /send?slot=morning|afternoon|evening|test   header X-Admin-Key: runs a slot now (test sends a fixed message)
 // Bindings: KV namespace SUBS; secrets VAPID_PRIVATE_JWK and ADMIN_KEY; var VAPID_PUBLIC.
 
 const LOG_URL = "https://raw.githubusercontent.com/realjaymes/fitness-tracker/main/data/log.json";
 const APP_URL = "https://realjaymes.github.io/fitness-tracker/";
 const ORIGINS = ["https://realjaymes.github.io", "http://localhost:8011", "http://127.0.0.1:8011"];
 const MAX_SUBS = 5;
+const WEIGH_DAYS = [0, 2, 4]; // weigh-in nudge on Monday, Wednesday and Friday mornings
+const PROTEIN_CHECK_G = 60; // the 17:00 check sends only when logged protein is under this
 const MEASURE_EVERY_DAYS = 28; // full body measurements every 4 weeks, counted from the last one logged
 const STRENGTH_DAYS = [0, 2, 4]; // Monday, Wednesday, Friday (Monday = 0)
 const LIGHT = new Set(["walk", "mobility", "cardio", "hiit", "other"]);
@@ -85,7 +89,21 @@ export function buildMessage(log, slot, today) {
     const measured = log.body.filter(b => b.waist_in && b.date <= today).map(b => b.date).sort().pop();
     if (measured && daysBetween(measured, today) >= MEASURE_EVERY_DAYS)
       body = `Measurements are due: weigh in, measure waist, neck, hips, chest, arm and thigh, and take front, side and back photos. ${body}`;
+    else if (WEIGH_DAYS.includes(weekday(today)) && !log.body.some(b => b.date === today && b.weight_kg))
+      body = `Weigh in before breakfast and log it. ${body}`;
     return { title, body: `${label}. ${body}`, url: APP_URL, tag: `fitness-${today}` };
+  }
+
+  if (slot === "afternoon") {
+    const day = log.days.find(d => d.date === today);
+    const meals = day?.meals || [];
+    const protein = Math.round(meals.reduce((n, m) => n + (m.protein_g || 0), 0));
+    const goal = cfg.targets.protein_g;
+    if (protein >= PROTEIN_CHECK_G) return null;
+    const body = meals.length
+      ? `You've logged ${protein} g of ${goal} g so far. Aim for about ${goal - protein} g at dinner: more meat, fish or eggs on the plate, or add Greek yogurt or a protein shake.`
+      : `No meals logged yet today. Log your first meal, and aim for about ${Math.round(goal / 2)} g of protein at dinner.`;
+    return { title: "Protein check", body, url: APP_URL + "#log", tag: `fitness-protein-${today}` };
   }
 
   const gaps = [];
@@ -196,7 +214,7 @@ export default {
       subs = subs.filter(x => x.endpoint !== s.endpoint);
       subs.push({ endpoint: s.endpoint, keys: { p256dh: s.keys.p256dh, auth: s.keys.auth }, added: new Date().toISOString() });
       await putSubs(env, subs.slice(-MAX_SUBS));
-      const r = await pushTo(subs[subs.length - 1], { title: "Fitness reminders are on", body: "You'll get today's plan at 7:30 and a reminder at 8:30 PM when the day isn't logged.", url: APP_URL, tag: "fitness-welcome" }, env).catch(e => ({ status: 0, text: String(e) }));
+      const r = await pushTo(subs[subs.length - 1], { title: "Fitness reminders are on", body: "You'll get today's plan at 7:30, a protein check at 5 PM when you're short, and a reminder at 8:30 PM when the day isn't logged.", url: APP_URL, tag: "fitness-welcome" }, env).catch(e => ({ status: 0, text: String(e) }));
       return json(req, { ok: true, devices: Math.min(subs.length, MAX_SUBS), welcome: r.status });
     }
 
@@ -209,7 +227,7 @@ export default {
   },
 
   async scheduled(event, env, ctx) {
-    const slot = event.cron === "30 6 * * *" ? "morning" : "evening";
+    const slot = { "30 6 * * *": "morning", "0 16 * * *": "afternoon" }[event.cron] || "evening";
     ctx.waitUntil(runSlot(slot, env).then(r => console.log(slot, JSON.stringify(r))));
   },
 };
