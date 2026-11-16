@@ -898,6 +898,62 @@
    "date": "2026-11-15",
    "type": "walk",
    "exercises": []
+  },
+  {
+   "date": "2026-11-16",
+   "type": "B",
+   "exercises": [
+    {
+     "name": "Deadlift",
+     "kg": 30,
+     "reps": [
+      8,
+      8,
+      8
+     ],
+     "rir": null
+    },
+    {
+     "name": "Incline Dumbbell Press",
+     "kg": 8.5,
+     "reps": [
+      8,
+      8,
+      8
+     ],
+     "rir": null
+    },
+    {
+     "name": "Lunges",
+     "kg": 8.5,
+     "reps": [
+      8,
+      8,
+      8
+     ],
+     "rir": null
+    },
+    {
+     "name": "Barbell Curl",
+     "kg": 30,
+     "reps": [
+      8,
+      8,
+      8
+     ],
+     "rir": null
+    },
+    {
+     "name": "Leg Raises",
+     "kg": 0,
+     "reps": [
+      8,
+      8,
+      8
+     ],
+     "rir": null
+    }
+   ]
   }
  ],
  "body": [
