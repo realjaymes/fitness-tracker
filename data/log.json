@@ -535,12 +535,20 @@
      "protein_g": 0,
      "carbs_g": 0,
      "fat_g": 0
+    },
+    {
+     "time": "19:05",
+     "desc": "Cravings n More: turkey pepper soup with 3 pieces of turkey and 2 small pieces of yam",
+     "kcal": 520,
+     "protein_g": 40,
+     "carbs_g": 30,
+     "fat_g": 22
     }
    ],
-   "kcal": 605,
-   "protein_g": 30,
-   "carbs_g": 55,
-   "fat_g": 28,
+   "kcal": 1125,
+   "protein_g": 70,
+   "carbs_g": 85,
+   "fat_g": 50,
    "steps": 4476
   }
  ],
