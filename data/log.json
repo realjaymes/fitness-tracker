@@ -549,7 +549,7 @@
    "protein_g": 70,
    "carbs_g": 85,
    "fat_g": 50,
-   "steps": 4476
+   "steps": 8710
   }
  ],
  "sessions": [
@@ -1006,6 +1006,11 @@
      "rir": null
     }
    ]
+  },
+  {
+   "date": "2026-11-17",
+   "type": "mobility",
+   "exercises": []
   }
  ],
  "body": [
