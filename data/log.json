@@ -511,7 +511,21 @@
   {
    "date": "2026-11-17",
    "sleep_h": 6,
-   "energy": 5
+   "energy": 5,
+   "meals": [
+    {
+     "time": "07:00",
+     "desc": "Asun spaghetti (small, under half portion), about half a fried chicken piece and stew",
+     "kcal": 600,
+     "protein_g": 30,
+     "carbs_g": 55,
+     "fat_g": 28
+    }
+   ],
+   "kcal": 600,
+   "protein_g": 30,
+   "carbs_g": 55,
+   "fat_g": 28
   }
  ],
  "sessions": [
