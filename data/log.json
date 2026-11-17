@@ -451,15 +451,15 @@
      "fat_g": 45
     },
     {
-     "desc": "Half a 60cl PET bottle of Fanta (about 300 ml)",
-     "kcal": 150,
+     "desc": "Half a 60cl bottle of Fanta Zero Sugar (about 300 ml)",
+     "kcal": 5,
      "protein_g": 0,
-     "carbs_g": 37,
+     "carbs_g": 0,
      "fat_g": 0
     }
    ],
-   "kcal": 1150,
-   "carbs_g": 122,
+   "kcal": 1005,
+   "carbs_g": 85,
    "fat_g": 45,
    "steps": 2948,
    "note": "Steps from the phone's Health app",
