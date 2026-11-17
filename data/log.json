@@ -527,9 +527,17 @@
      "protein_g": 30,
      "carbs_g": 55,
      "fat_g": 28
+    },
+    {
+     "time": "07:05",
+     "desc": "Half a 60cl bottle of Fanta Zero Sugar (about 300 ml)",
+     "kcal": 5,
+     "protein_g": 0,
+     "carbs_g": 0,
+     "fat_g": 0
     }
    ],
-   "kcal": 600,
+   "kcal": 605,
    "protein_g": 30,
    "carbs_g": 55,
    "fat_g": 28,
