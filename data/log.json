@@ -543,12 +543,20 @@
      "protein_g": 40,
      "carbs_g": 30,
      "fat_g": 22
+    },
+    {
+     "time": "22:20",
+     "desc": "Cravings n More: half a wrap of eba and half a portion of oha soup",
+     "kcal": 300,
+     "protein_g": 7,
+     "carbs_g": 48,
+     "fat_g": 9
     }
    ],
-   "kcal": 1125,
-   "protein_g": 70,
-   "carbs_g": 85,
-   "fat_g": 50,
+   "kcal": 1425,
+   "protein_g": 77,
+   "carbs_g": 133,
+   "fat_g": 59,
    "steps": 8710
   }
  ],
