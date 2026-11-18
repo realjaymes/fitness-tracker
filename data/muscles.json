@@ -1,0 +1,187 @@
+{
+ "types": {
+  "Barbell Squat": "squat",
+  "Bench Press": "push",
+  "Dumbbell Row": "pull",
+  "Dumbbell Shoulder Press": "push",
+  "Plank": "core",
+  "Deadlift": "hinge",
+  "Incline Dumbbell Press": "push",
+  "Lunges": "lunge",
+  "Barbell Curl": "pull",
+  "Leg Raises": "core",
+  "Goblet Squat": "squat",
+  "Barbell Row": "pull",
+  "Dumbbell Flyes": "push",
+  "Bench Dips": "push",
+  "Russian Twists": "core"
+ },
+ "type_names": {
+  "push": "Push",
+  "pull": "Pull",
+  "squat": "Squat",
+  "hinge": "Hinge",
+  "lunge": "Lunge",
+  "core": "Core"
+ },
+ "exercises": {
+  "Barbell Squat": {
+   "slug": "barbell-squat",
+   "main": [
+    "quads",
+    "glutes"
+   ],
+   "help": [
+    "hamstrings",
+    "abs",
+    "obliques",
+    "lower_back"
+   ]
+  },
+  "Bench Press": {
+   "slug": "bench-press",
+   "main": [
+    "chest"
+   ],
+   "help": [
+    "delt_front",
+    "triceps"
+   ]
+  },
+  "Dumbbell Row": {
+   "slug": "dumbbell-row",
+   "main": [
+    "lats",
+    "upper_back"
+   ],
+   "help": [
+    "biceps",
+    "delt_rear"
+   ]
+  },
+  "Dumbbell Shoulder Press": {
+   "slug": "dumbbell-shoulder-press",
+   "main": [
+    "delt_front"
+   ],
+   "help": [
+    "triceps"
+   ]
+  },
+  "Plank": {
+   "slug": "plank",
+   "main": [
+    "abs",
+    "obliques"
+   ],
+   "help": [
+    "lower_back",
+    "glutes"
+   ]
+  },
+  "Deadlift": {
+   "slug": "deadlift",
+   "main": [
+    "hamstrings",
+    "glutes",
+    "lower_back"
+   ],
+   "help": [
+    "upper_back",
+    "lats",
+    "forearms"
+   ]
+  },
+  "Incline Dumbbell Press": {
+   "slug": "incline-dumbbell-press",
+   "main": [
+    "chest",
+    "delt_front"
+   ],
+   "help": [
+    "triceps"
+   ]
+  },
+  "Lunges": {
+   "slug": "lunges",
+   "main": [
+    "quads",
+    "glutes"
+   ],
+   "help": [
+    "hamstrings"
+   ]
+  },
+  "Barbell Curl": {
+   "slug": "barbell-curl",
+   "main": [
+    "biceps"
+   ],
+   "help": [
+    "forearms"
+   ]
+  },
+  "Leg Raises": {
+   "slug": "leg-raises",
+   "main": [
+    "abs",
+    "hip_flexors"
+   ],
+   "help": []
+  },
+  "Goblet Squat": {
+   "slug": "goblet-squat",
+   "main": [
+    "quads",
+    "glutes"
+   ],
+   "help": [
+    "hamstrings",
+    "abs",
+    "obliques",
+    "lower_back"
+   ]
+  },
+  "Barbell Row": {
+   "slug": "barbell-row",
+   "main": [
+    "lats",
+    "upper_back"
+   ],
+   "help": [
+    "biceps",
+    "delt_rear",
+    "lower_back"
+   ]
+  },
+  "Dumbbell Flyes": {
+   "slug": "dumbbell-flyes",
+   "main": [
+    "chest"
+   ],
+   "help": [
+    "delt_front"
+   ]
+  },
+  "Bench Dips": {
+   "slug": "bench-dips",
+   "main": [
+    "triceps"
+   ],
+   "help": [
+    "chest",
+    "delt_front"
+   ]
+  },
+  "Russian Twists": {
+   "slug": "russian-twists",
+   "main": [
+    "obliques",
+    "abs"
+   ],
+   "help": [
+    "lower_back"
+   ]
+  }
+ }
+}

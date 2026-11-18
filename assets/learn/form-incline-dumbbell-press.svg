@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 182" width="360" height="182" role="img" aria-label="Incline Dumbbell Press: start and end positions"><title>Incline Dumbbell Press: start and end positions</title><style>
+.t{font:700 12px system-ui,-apple-system,'Segoe UI',sans-serif;fill:#1c1422} .h{font:800 14px system-ui,-apple-system,'Segoe UI',sans-serif;fill:#1c1422} .s{font:400 11px system-ui,-apple-system,'Segoe UI',sans-serif;fill:#5d5464}
+.lb{font:700 11px system-ui,-apple-system,'Segoe UI',sans-serif;fill:#1c1422} .cap{font:600 10px system-ui,-apple-system,'Segoe UI',sans-serif;fill:#5d5464}
+.bo{fill:#1c1422;stroke:#1c1422;stroke-width:2.6;stroke-linejoin:round} .bf{fill:#faf8fc}
+.m{fill:#e6dff0;stroke:#1c1422;stroke-width:.8;stroke-linejoin:round} .m.s{fill:url(#hs)} .m.p{fill:#f2b933;stroke-width:1.4}
+.hsb{fill:#fbf3c4} .hsl{stroke:#dcae2c;stroke-width:1.5}
+.dt path{fill:none;stroke:#1c1422;stroke-width:.6;stroke-linecap:round}
+.ld{stroke:#1c1422;stroke-width:.7;fill:none} .dot{fill:#1c1422}
+.panel{fill:#f1ecf5} .swp{fill:#f2b933;stroke:#1c1422;stroke-width:1.4} .sws{fill:url(#hs);stroke:#1c1422;stroke-width:.8}
+
+.jd{fill:#f1ecf5} .fhh{fill:#1c1422;stroke:#f1ecf5;stroke-width:1.8}
+.hl{fill:none;stroke:#f1ecf5;stroke-linecap:round;stroke-linejoin:round}
+.fg{fill:none;stroke:#1c1422;stroke-linecap:round;stroke-linejoin:round}
+.fh{fill:#1c1422} .far{opacity:.5}
+.eq{fill:#8a7f94;stroke:#1c1422;stroke-width:1} .eqs{fill:none;stroke:#1c1422;stroke-width:1.4;stroke-linecap:round}
+.bn{fill:#d9cfe3;stroke:#1c1422;stroke-width:1} .mat{fill:#9fd8c4;stroke:#1c1422;stroke-width:1}
+.benc{stroke:#1c1422;fill:none;stroke-linecap:round} .bencf{stroke:#d9cfe3;fill:none;stroke-linecap:round}
+.gr{stroke:#8a7f94;stroke-width:1.2;fill:none}
+.ar{fill:none;stroke:#eb6834;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round} .arh{fill:#eb6834}
+.pill{fill:#f1de71} .pt{font:700 10.5px system-ui,-apple-system,'Segoe UI',sans-serif;fill:#100a16}
+.pl{font:700 10px system-ui,-apple-system,'Segoe UI',sans-serif;fill:#5d5464;letter-spacing:.04em}
+
+@media (prefers-color-scheme: dark) {
+ .t,.h,.lb{fill:#f7f4fa} .s,.cap{fill:#bdb4c4}
+ .bo{fill:#f7f4fa;stroke:#f7f4fa} .bf{fill:#1b1422}
+ .m{fill:#33283d;stroke:#f7f4fa} .m.p{fill:#f2b933;stroke:#100a16} .hsb{fill:#3d3520} .hsl{stroke:#d1a22c}
+ .dt path{stroke:#f7f4fa} .ld{stroke:#f7f4fa} .dot{fill:#f7f4fa}
+ .panel{fill:#271d2f} .swp{stroke:#f7f4fa} .sws{stroke:#f7f4fa}
+
+.jd{fill:#271d2f} .fhh{fill:#f7f4fa;stroke:#271d2f} .hl{stroke:#271d2f} .fg{stroke:#f7f4fa} .fh{fill:#f7f4fa}
+.eq{fill:#a79cb2;stroke:#f7f4fa} .eqs{stroke:#f7f4fa}
+.bn{fill:#3a2e44;stroke:#f7f4fa} .mat{fill:#1f6b57;stroke:#f7f4fa}
+.benc{stroke:#f7f4fa} .bencf{stroke:#3a2e44} .gr{stroke:#6d6279}
+.ar{stroke:#f08a5d} .arh{fill:#f08a5d}
+.pl{fill:#bdb4c4}
+
+}
+</style><defs><pattern id="hs" width="4" height="4" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="4" height="4" class="hsb"/><line x1="0" y1="0" x2="0" y2="4" class="hsl"/></pattern></defs><g transform="translate(0 0)"><rect class="panel" width="176" height="150" rx="10"/><path class="gr" d="M4 140 L172 140"/><path class="gr" d="M68 108 L68 140 M108 108 L108 140"/><path d="M84.0 104.0 L43.0 63.0" stroke-width="11" class="benc"/><path d="M114.0 104.0 L84.0 104.0" stroke-width="11" class="benc"/><path d="M84.0 104.0 L43.0 63.0" stroke-width="8.6" class="bencf"/><path d="M114.0 104.0 L84.0 104.0" stroke-width="8.6" class="bencf"/><g class="fg"><path class="hl" stroke-width="11.9" d="M91.1 96.9 L117.8 110.5"/><path class="fg" stroke-width="9.5" d="M91.1 96.9 L117.8 110.5"/><path class="hl" stroke-width="10.4" d="M117.8 110.5 L106.0 137.0"/><path class="fg" stroke-width="8" d="M117.8 110.5 L106.0 137.0"/><circle class="jd" cx="117.8" cy="110.5" r="1.7"/><path class="fg" stroke-width="6" d="M106.0 137.0 L114.0 140.0"/></g><path class="fg" stroke-width="15" d="M91.1 96.9 L61.4 67.2"/><path class="fg" stroke-width="5" d="M61.4 67.2 L57.5 64.1"/><circle class="fh" cx="51.7" cy="59.4" r="7.5"/><circle class="jd" cx="91.1" cy="96.9" r="1.7"/><path class="hl" stroke-width="9.4" d="M61.4 67.2 L81.0 74.6"/><path class="fg" stroke-width="7" d="M61.4 67.2 L81.0 74.6"/><path class="hl" stroke-width="8.4" d="M81.0 74.6 L71.4 58.2"/><path class="fg" stroke-width="6" d="M81.0 74.6 L71.4 58.2"/><circle class="jd" cx="81.0" cy="74.6" r="1.7"/><circle class="fh" cx="71.4" cy="58.2" r="3.4"/><circle class="jd" cx="61.4" cy="67.2" r="1.7"/><circle class="eq" cx="71.4" cy="58.2" r="5"/><path class="ar" d="M88.0 54.0 L88.0 22.0"/><path class="ar" d="M91.0 27.2 L88.0 22.0 L85.0 27.2"/><text class="pl" x="10" y="16">START</text></g><rect class="pill" x="10.5" y="156" width="155" height="20" rx="10"/><text class="pt" x="88.0" y="170" text-anchor="middle">Upper back on the bench</text><g transform="translate(184 0)"><rect class="panel" width="176" height="150" rx="10"/><path class="gr" d="M4 140 L172 140"/><path class="gr" d="M68 108 L68 140 M108 108 L108 140"/><path d="M84.0 104.0 L43.0 63.0" stroke-width="11" class="benc"/><path d="M114.0 104.0 L84.0 104.0" stroke-width="11" class="benc"/><path d="M84.0 104.0 L43.0 63.0" stroke-width="8.6" class="bencf"/><path d="M114.0 104.0 L84.0 104.0" stroke-width="8.6" class="bencf"/><g class="fg"><path class="hl" stroke-width="11.9" d="M91.1 96.9 L117.8 110.5"/><path class="fg" stroke-width="9.5" d="M91.1 96.9 L117.8 110.5"/><path class="hl" stroke-width="10.4" d="M117.8 110.5 L106.0 137.0"/><path class="fg" stroke-width="8" d="M117.8 110.5 L106.0 137.0"/><circle class="jd" cx="117.8" cy="110.5" r="1.7"/><path class="fg" stroke-width="6" d="M106.0 137.0 L114.0 140.0"/></g><path class="fg" stroke-width="15" d="M91.1 96.9 L61.4 67.2"/><path class="fg" stroke-width="5" d="M61.4 67.2 L57.5 64.1"/><circle class="fh" cx="51.7" cy="59.4" r="7.5"/><circle class="jd" cx="91.1" cy="96.9" r="1.7"/><path class="hl" stroke-width="9.4" d="M61.4 67.2 L61.8 46.2"/><path class="fg" stroke-width="7" d="M61.4 67.2 L61.8 46.2"/><path class="hl" stroke-width="8.4" d="M61.8 46.2 L61.4 27.2"/><path class="fg" stroke-width="6" d="M61.8 46.2 L61.4 27.2"/><circle class="jd" cx="61.8" cy="46.2" r="1.7"/><circle class="fh" cx="61.4" cy="27.2" r="3.4"/><circle class="jd" cx="61.4" cy="67.2" r="1.7"/><circle class="eq" cx="61.4" cy="27.2" r="5"/><text class="pl" x="10" y="16">END</text></g><rect class="pill" x="191.5" y="156" width="161" height="20" rx="10"/><text class="pt" x="272.0" y="170" text-anchor="middle">Arms straight at the top</text></svg>

@@ -308,6 +308,14 @@ mark { background: color-mix(in srgb, var(--accent) 70%, transparent); color: in
 /* exercise videos and diagrams */
 .exi { display: grid; grid-template-columns: 112px 1fr; gap: 10px; align-items: start; }
 .exi.no-thumb { grid-template-columns: 1fr; }
+.exi-media { display: grid; gap: 8px; align-content: start; }
+.mini-map { width: 100%; height: auto; display: block; border-radius: 8px; background: var(--surface-2); padding: 4px 6px; box-sizing: border-box; }
+.chip.ty { background: var(--accent); color: var(--accent-ink); font-weight: 600; margin-left: 4px; vertical-align: 1px; }
+.form-card { grid-column: 1 / -1; margin-top: 4px; }
+.form-card summary { cursor: pointer; font-size: 13px; color: var(--ink); text-decoration: underline; text-decoration-color: var(--accent); text-decoration-thickness: 2px; width: fit-content; }
+.form-card img { width: 100%; max-width: 420px; height: auto; display: block; margin-top: 8px; }
+.fig img[src*="/type-"], .fig img[src*="/muscle-"]:not([src*="muscle-map"]):not([src*="muscle-warmup"]):not([src*="muscle-cooldown"]) { max-width: 230px; margin: 0 auto; }
+.fig img[src*="/exercise-"] { max-width: 420px; margin: 0 auto; }
 .exi .player { grid-column: 1 / -1; }
 .thumb { position: relative; border: 0; padding: 0; border-radius: 8px; overflow: hidden; cursor: pointer; background: var(--empty); aspect-ratio: 16 / 9; }
 .thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }

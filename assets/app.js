@@ -10,6 +10,7 @@
     walk: "Walk", mobility: "Mobility", cardio: "Cardio", hiit: "HIIT", other: "Other" };
   const WEEKDAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
   const params = new URLSearchParams(location.search);
+  let MUS = { types: {}, type_names: {} };   // data/muscles.json, written by tools/make_muscles.py
   const DEMO = params.get("demo") === "1";
 
   let log, TODAY, range = "block", showTab;
@@ -819,16 +820,19 @@
   }
   function strengthCard(kind) {
     const g = gd(), list = cfg().program[kind] || [];
-    const ex = list.map((n, i) => { const vids = g.videos?.[n] || [], th = thumb(n);
-      return `<li class="exi${th ? "" : " no-thumb"}">${th}<div class="exi-txt"><b>${i + 1}. ${esc(n)}</b>
+    const ex = list.map((n, i) => { const vids = g.videos?.[n] || [], th = thumb(n), sl = slug(n), ty = MUS.types[n];
+      const map = MUS.types[n] ? `<img class="mini-map" src="${`assets/learn/muscle-${sl}.svg`}" alt="Muscles for ${esc(n)}: main muscles strong yellow, helpers light yellow" loading="lazy">` : "";
+      return `<li class="exi${th ? "" : " no-thumb"}"><div class="exi-media">${th}${map}</div><div class="exi-txt"><b>${i + 1}. ${esc(n)}</b>${ty ? ` <span class="chip ty">${esc(MUS.type_names[ty] || ty)}</span>` : ""}
       <div class="sub">${esc(g.reps_note?.[n] || g.sets || "3 sets of 8–12 reps")}</div><div class="sub w">${esc(weightLine(n))}</div>
       <a href="#" class="linkish howto" data-ch="10" data-anchor="${slug(n)}">How to do it, step by step</a>
-      ${!th || vids.length > 1 ? `<div class="vids">${vlinks(th ? vids.slice(1) : vids)}</div>` : ""}</div></li>`; }).join("");
+      ${!th || vids.length > 1 ? `<div class="vids">${vlinks(th ? vids.slice(1) : vids)}</div>` : ""}</div>
+      ${ty ? `<details class="form-card"><summary>Show the form picture</summary><img src="assets/learn/form-${sl}.svg" alt="${esc(n)}: start and end positions" loading="lazy"></details>` : ""}</li>`; }).join("");
     return `<ol class="steps">
       <li><b>Eat and drink before.</b> Have a normal meal 2–3 hours before, or a light snack with carbs and protein 30–60 minutes before: bread and eggs, oats with milk, or a banana with Greek yoghurt. Drink a glass of water, and keep a bottle nearby to sip between sets. If you take creatine, have 3–5 g with that water.</li>
       <li><b>Warm up, 5 minutes.</b> Move slowly and with control.<div class="vids">${vlinks(g.warmup)}</div></li>
       <li><b>Lift.</b> A rep is one full movement, down and up. A set is a run of reps without stopping. Do all the sets of one exercise before moving to the next.
         <br>Stop each set when you could still do ${esc(g.rir || "1–3")} more good reps, meaning full movements with control and no pain. Rest ${esc(g.rest || "60–120 seconds")} between sets, and about 2 minutes before the next exercise.
+        <br><span class="sub">On each body map, strong yellow is a main muscle and light yellow is a helper.</span>
         <ul class="exlist">${ex}</ul></li>
       <li><b>Cool down, 5–10 minutes.</b> Hold each stretch 20–40 seconds. Mild tension, no pain, no bouncing.<div class="vids">${vlinks(g.cooldown)}</div></li>
       <li><b>Eat and drink after.</b> Have a meal with protein within a few hours, such as rice with chicken or fish and beans. There's no 30-minute rush. Drink water to replace what you sweated. If food won't reach 120 g of protein today, a scoop of whey (about 20–25 g) counts.</li>
@@ -1077,6 +1081,7 @@
       document.querySelectorAll("[data-range]").forEach(x => x.setAttribute("aria-pressed", String(x.dataset.range === "all")));
     }
     wireForm();
+    try { MUS = await (await fetch(`data/muscles.json?t=${Date.now()}`, { cache: "no-store" })).json(); } catch {}
     renderAll();
     // A Home Screen app resumes without reloading, so fetch the log again when it comes back into view
     let loadedAt = Date.now();
