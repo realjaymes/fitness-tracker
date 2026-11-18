@@ -13,7 +13,7 @@
   let MUS = { types: {}, type_names: {} };   // data/muscles.json, written by tools/make_muscles.py
   const DEMO = params.get("demo") === "1";
 
-  let log, TODAY, range = "block", showTab;
+  let log, raw, TODAY, range = "block", showTab;
   const charts = {};
 
   /* ---------- dates ---------- */
@@ -407,7 +407,7 @@
     const [from, to] = rangeBounds();
     const pick = document.getElementById("lift-pick");
     const names = allLiftNames();
-    const current = pick.value || names.find(n => liftHistory(n).length) || names[0];
+    const current = pick.value || (names.includes(ui.lift) ? ui.lift : null) || names.find(n => liftHistory(n).length) || names[0];
     pick.innerHTML = names.map(n => `<option${n === current ? " selected" : ""}>${esc(n)}</option>`).join("");
     const h = liftHistory(current, from, to);
     const line1 = document.getElementById("lift-line");
@@ -779,13 +779,14 @@
     const v = gd().videos?.[name]?.[0], id = v && ytId(v[1]);
     return id ? `<button type="button" class="thumb" data-yt="${id}" data-url="${esc(v[1])}"${/shorts\//.test(v[1]) ? " data-tall" : ""} aria-label="Play the ${esc(name)} video"><img src="https://i.ytimg.com/vi/${id}/mqdefault.jpg" alt="" loading="lazy"><span>▶</span></button>` : "";
   }
-  function play(el) {
+  function play(el, start = 0) {
     const host = el.closest("li"), id = el.dataset.yt;
     let box = host.querySelector(":scope > .player");
-    if (box && box.dataset.id === id) { box.remove(); return; }
+    if (box && box.dataset.id === id) { box.remove(); if (ui.video && ui.video.key === hostKey(host)) { ui.video = null; scheduleSave(); } return; }
     if (!box) { box = document.createElement("div"); box.className = "player"; host.appendChild(box); }
     box.dataset.id = id; box.classList.toggle("tall", el.hasAttribute("data-tall"));
-    box.innerHTML = `<div class="frame"><iframe src="https://www.youtube-nocookie.com/embed/${id}?autoplay=1&playsinline=1&rel=0" title="Exercise video" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe></div><div class="player-bar"><a href="${esc(el.dataset.url || el.href)}" target="_blank" rel="noopener">Open in YouTube</a><button type="button" class="linkish" data-close>Close video</button></div>`;
+    ui.video = { key: hostKey(host), id, t: start, tall: el.hasAttribute("data-tall"), url: el.dataset.url || el.href || "" }; scheduleSave();
+    box.innerHTML = `<div class="frame"><iframe src="https://www.youtube-nocookie.com/embed/${id}?autoplay=1&playsinline=1&rel=0&enablejsapi=1&origin=${encodeURIComponent(location.origin)}${start > 0 ? `&start=${start}` : ""}" title="Exercise video" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe></div><div class="player-bar"><a href="${esc(el.dataset.url || el.href)}" target="_blank" rel="noopener">Open in YouTube</a><button type="button" class="linkish" data-close>Close video</button></div>`;
   }
   const STRENGTH_DAYS = [0, 2, 4];
   // lead-in days before Week 1 (config.block.lead_in, date -> "A" or "walk") start the rotation early
@@ -822,11 +823,11 @@
     const g = gd(), list = cfg().program[kind] || [];
     const ex = list.map((n, i) => { const vids = g.videos?.[n] || [], th = thumb(n), sl = slug(n), ty = MUS.types[n];
       const map = MUS.types[n] ? `<img class="mini-map" src="${`assets/learn/muscle-${sl}.svg`}" alt="Muscles for ${esc(n)}: main muscles strong yellow, helpers light yellow" loading="lazy">` : "";
-      return `<li class="exi${th ? "" : " no-thumb"}"><div class="exi-media">${th}${map}</div><div class="exi-txt"><b>${i + 1}. ${esc(n)}</b>${ty ? ` <span class="chip ty">${esc(MUS.type_names[ty] || ty)}</span>` : ""}
+      return `<li class="exi${th ? "" : " no-thumb"}" data-key="ex:${sl}"><div class="exi-media">${th}${map}</div><div class="exi-txt"><b>${i + 1}. ${esc(n)}</b>${ty ? ` <span class="chip ty">${esc(MUS.type_names[ty] || ty)}</span>` : ""}
       <div class="sub">${esc(g.reps_note?.[n] || g.sets || "3 sets of 8–12 reps")}</div><div class="sub w">${esc(weightLine(n))}</div>
       <a href="#" class="linkish howto" data-ch="10" data-anchor="${slug(n)}">How to do it, step by step</a>
       ${!th || vids.length > 1 ? `<div class="vids">${vlinks(th ? vids.slice(1) : vids)}</div>` : ""}</div>
-      ${ty ? `<details class="form-card"><summary>Show the form picture</summary><img src="assets/learn/form-${sl}.svg" alt="${esc(n)}: start and end positions" loading="lazy"></details>` : ""}</li>`; }).join("");
+      ${ty ? `<details class="form-card" data-key="form:${sl}"><summary>Show the form picture</summary><img src="assets/learn/form-${sl}.svg" alt="${esc(n)}: start and end positions" loading="lazy"></details>` : ""}</li>`; }).join("");
     return `<ol class="steps">
       <li><b>Eat and drink before.</b> Have a normal meal 2–3 hours before, or a light snack with carbs and protein 30–60 minutes before: bread and eggs, oats with milk, or a banana with Greek yoghurt. Drink a glass of water, and keep a bottle nearby to sip between sets. If you take creatine, have 3–5 g with that water.</li>
       <li><b>Warm up, 5 minutes.</b> Move slowly and with control.<div class="vids">${vlinks(g.warmup)}</div></li>
@@ -879,7 +880,7 @@
 
   function renderGuide() {
     const g = gd(), t = cfg().targets, steps = t.steps.map(s => n0(s.steps));
-    const sec = (title, body, open) => `<details class="card gsec"${open ? " open" : ""}><summary>${title}</summary><div class="gbody">${body}</div></details>`;
+    const sec = (title, body, open) => `<details class="card gsec" data-key="guide:${slug(title)}"${open ? " open" : ""}><summary>${title}</summary><div class="gbody">${body}</div></details>`;
     document.getElementById("guide-body").innerHTML = [
       sec("What to do each day", `<ul>
         <li><b>Monday, Wednesday, Friday:</b> a strength session (A, then B, then C). The Week tab shows exactly what to do.</li>
@@ -931,9 +932,9 @@
     document.getElementById("plan").addEventListener("click", e => {
       const y = e.target.closest("[data-yt]"), c = e.target.closest("[data-close]");
       if (y) { e.preventDefault(); play(y); return; }
-      if (c) { c.closest(".player").remove(); return; }
+      if (c) { const box = c.closest(".player"); if (ui.video && ui.video.key === hostKey(box.closest("li"))) { ui.video = null; scheduleSave(); } box.remove(); return; }
       const p = e.target.closest("[data-pick]"), l = e.target.closest("[data-log]");
-      if (p) { planPick = p.dataset.pick === "auto" ? null : p.dataset.pick; renderPlan(); }
+      if (p) { planPick = p.dataset.pick === "auto" ? null : p.dataset.pick; ui.plan = planPick; scheduleSave(); renderPlan(); }
       if (l) startLog(l.dataset.log);
     });
   }
@@ -953,10 +954,11 @@
     box.innerHTML = ch.length ? ch.map((c, i) => `<button type="button" class="learn-item" data-ch="${c.id}"><span class="num">${i + 1}</span><span><b>${esc(c.title)}</b><span class="sub">${esc(c.blurb)}</span></span></button>`).join("")
       : `<p class="sub">The library didn't load. Check your connection and reopen the Guide.</p>`;
   }
-  async function openChapter(id, anchor) {
+  async function openChapter(id, anchor, restoring) {
     const ch = await loadLearn(), i = ch.findIndex(c => c.id === id);
-    if (i < 0) return;
+    if (i < 0) return false;
     const c = ch[i];
+    ui.chapter = id; ui.anchor = anchor || null;
     document.getElementById("chapter-num").textContent = `Chapter ${i + 1} of ${ch.length}`;
     document.getElementById("chapter-title").textContent = c.title;
     document.getElementById("chapter-body").innerHTML = c.html;
@@ -965,13 +967,17 @@
       (prev ? `<button type="button" class="btn ghost" data-ch="${prev.id}">← ${esc(prev.title)}</button>` : "<span></span>") +
       (next ? `<button type="button" class="btn ghost" data-ch="${next.id}">${esc(next.title)} →</button>` : "");
     showTab("chapter");
-    const target = anchor && document.getElementById(anchor);
-    if (target) target.scrollIntoView();
+    uiApply();
+    const target = anchor && document.getElementById(anchor), saved = ui.scroll[viewKey()];
+    if (restoring && saved > 0) setScroll(saved);
+    else if (target) target.scrollIntoView();
+    scheduleSave();
+    return true;
   }
   async function searchLearn(q) {
     const box = document.getElementById("search-results"), main = document.getElementById("guide-main");
     q = q.trim().toLowerCase();
-    if (q.length < 2) { box.innerHTML = ""; main.hidden = false; return; }
+    if (q.length < 2) { box.innerHTML = ""; main.hidden = false; ui.search = ""; scheduleSave(); return; }
     const ch = await loadLearn(), tmp = document.createElement("div"), hits = [];
     for (const c of [...ch].sort((a, b) => (b.title === "Glossary") - (a.title === "Glossary"))) {
       if (!c.text.toLowerCase().includes(q)) continue;
@@ -983,6 +989,7 @@
           return `<p class="snip">${esc(snip).replace(new RegExp(q.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "gi"), m => `<mark>${m}</mark>`)}</p>`; }).join("") + `</div>`);
     }
     main.hidden = true;
+    ui.search = q; scheduleSave();
     box.innerHTML = hits.length ? `<p class="sub">${hits.length} chapter${hits.length > 1 ? "s" : ""} mention "${esc(q)}".</p>` + hits.join("") : `<p class="sub">Nothing in the playbook mentions "${esc(q)}".</p>`;
   }
   function wireLearn() {
@@ -1029,15 +1036,72 @@
     });
   }
 
+  /* ---------- keep my place (localStorage ft_ui) ----------
+     The tab, Guide chapter and anchor, scroll position per view, which <details> are open (by stable key),
+     the open exercise video and how far in it was, and the plan, range and lift pickers. It is saved as things
+     change and when the app goes to the background, and put back after every render and on a cold start. */
+  const uiKey = "ft_ui";
+  const ui = { tab: null, chapter: null, anchor: null, scroll: {}, open: {}, video: null, plan: null, range: null, lift: null, search: "" };
+  try { const s = JSON.parse(localStorage.getItem(uiKey) || "null"); if (s && typeof s === "object") Object.assign(ui, s); } catch {}
+  if (!ui.scroll || typeof ui.scroll !== "object") ui.scroll = {};
+  if (!ui.open || typeof ui.open !== "object") ui.open = {};
+  let uiArmed = false, uiTimer = 0;
+  const startTab = () => ui.tab && ui.tab !== "chapter" && document.querySelector(`.tabs [data-go="${ui.tab}"]`) ? ui.tab : (ui.tab === "chapter" ? "guide" : "today");
+  const viewKey = () => document.body.dataset.tab === "chapter" ? `chapter:${ui.chapter}` : (document.body.dataset.tab || "today");
+  const hostKey = li => li.dataset.key || `li:${((li.querySelector("b") || {}).textContent || "").trim().slice(0, 40)}`;
+  const detailKey = d => {
+    if (d.dataset.key) return d.dataset.key;
+    const host = d.closest("[id]"), id = host ? host.id : "";
+    return `${id === "chapter-body" ? `chapter:${ui.chapter}` : id}:${((d.querySelector(":scope > summary") || {}).textContent || "").trim().slice(0, 60)}`;
+  };
+  function saveUI() {
+    clearTimeout(uiTimer); uiTimer = 0;
+    if (!uiArmed) return;
+    try { localStorage.setItem(uiKey, JSON.stringify(ui)); } catch {}
+  }
+  function scheduleSave() { if (uiArmed && !uiTimer) uiTimer = setTimeout(saveUI, 800); }
+  function uiRead() {
+    document.querySelectorAll("details").forEach(d => { ui.open[detailKey(d)] = d.open; });
+    ui.scroll[viewKey()] = Math.round(window.scrollY);
+  }
+  function setScroll(y) {
+    if (!(y > 0)) return;
+    scrollTo(0, y); requestAnimationFrame(() => scrollTo(0, y)); setTimeout(() => scrollTo(0, y), 250);
+  }
+  function uiApply() {
+    document.querySelectorAll("details").forEach(d => { const k = detailKey(d); if (k in ui.open) d.open = !!ui.open[k]; });
+    const v = ui.video;
+    if (!v) return;
+    const host = [...document.querySelectorAll("#plan li")].find(li => hostKey(li) === v.key);
+    const el = host && host.querySelector(`[data-yt="${v.id}"]`);
+    if (el && !host.querySelector(":scope > .player")) play(el, Math.floor(v.t || 0));
+  }
+  // Watch the open video's clock. The embed (enablejsapi=1) answers a "listening" message with infoDelivery
+  // events that carry currentTime.
+  document.addEventListener("load", e => {
+    if (e.target.tagName === "IFRAME" && e.target.closest(".player")) { try { e.target.contentWindow.postMessage(JSON.stringify({ event: "listening", id: 1, channel: "widget" }), "https://www.youtube-nocookie.com"); } catch {} }
+  }, true);
+  addEventListener("message", e => {
+    if (e.origin !== "https://www.youtube-nocookie.com" || !ui.video) return;
+    let m; try { m = JSON.parse(e.data); } catch { return; }
+    const t = m && m.event === "infoDelivery" && m.info && m.info.currentTime;
+    const box = [...document.querySelectorAll(".player")].find(b => { const f = b.querySelector("iframe"); return f && f.contentWindow === e.source; });
+    if (typeof t === "number" && box && box.dataset.id === ui.video.id) { ui.video.t = Math.floor(t); scheduleSave(); }
+  });
+  document.addEventListener("toggle", e => { if (e.target.tagName === "DETAILS" && uiArmed) { ui.open[detailKey(e.target)] = e.target.open; scheduleSave(); } }, true);
+  addEventListener("scroll", () => { if (uiArmed) { ui.scroll[viewKey()] = Math.round(window.scrollY); scheduleSave(); } }, { passive: true });
+  addEventListener("pagehide", () => { if (uiArmed) { uiRead(); saveUI(); } });
+  document.addEventListener("visibilitychange", () => { if (document.visibilityState === "hidden" && uiArmed) { uiRead(); saveUI(); } });
+
   /* ---------- layout ---------- */
   function wireLayout() {
     if (typeof Chart !== "undefined") Chart.defaults.font.family = getComputedStyle(document.body).fontFamily;
     document.querySelectorAll("[data-range]").forEach(b => b.addEventListener("click", () => {
-      range = b.dataset.range;
+      range = b.dataset.range; ui.range = range; scheduleSave();
       document.querySelectorAll("[data-range]").forEach(x => x.setAttribute("aria-pressed", String(x === b)));
       renderTrends(); renderLifts(); renderBody();
     }));
-    document.getElementById("lift-pick").addEventListener("change", renderLifts);
+    document.getElementById("lift-pick").addEventListener("change", e => { ui.lift = e.target.value; scheduleSave(); renderLifts(); });
     const show = showTab = tab => {
       document.body.dataset.tab = tab;
       document.querySelectorAll("section[data-tab]").forEach(s => s.classList.toggle("on", s.dataset.tab === tab));
@@ -1045,14 +1109,20 @@
       if (tab === "guide") renderLearnList();
       Object.values(charts).forEach(c => c.resize());
       window.scrollTo(0, 0);
+      if (uiArmed) { ui.tab = tab; ui.scroll[viewKey()] = 0; scheduleSave(); }
     };
     wirePlan(); wireLearn(); wireReminders();
     document.querySelector(".tabs").addEventListener("click", e => { const b = e.target.closest("[data-go]"); if (b) show(b.dataset.go); });
-    show(location.hash === "#log" ? "log" : "today");
+    show(location.hash === "#log" ? "log" : startTab());
     matchMedia("(prefers-color-scheme: dark)").addEventListener("change", renderAll);
   }
 
   function renderAll() {
+    if (uiArmed) uiRead();   // a re-render rebuilds the page, so note what is open and where we are first
+    renderAll0();
+    uiApply(); setScroll(ui.scroll[viewKey()]);
+  }
+  function renderAll0() {
     renderHeader(); renderPlan(); renderFood(); renderGuide(); renderWeek(); renderGrid(); renderInsights();
     renderTrends(); renderLifts(); renderBody(); renderHistory();
   }
@@ -1061,21 +1131,23 @@
     if (getToken() && !DEMO) {
       try {
         const r = await fetch(`${api}?ref=${BRANCH}`, { headers: { ...headers(), Accept: "application/vnd.github.raw+json" }, cache: "no-store" });
-        if (r.ok) return r.json();
+        if (r.ok) return r.text();
       } catch {}
     }
     const r = await fetch(`${PATH}?t=${Date.now()}`, { cache: "no-store" });
-    return r.json();
+    return r.text();
   }
 
   async function init() {
     wireLayout();
-    try { log = await load(); }
+    try { raw = await load(); log = JSON.parse(raw); }
     catch { document.getElementById("block-line").textContent = "Couldn't load the log. Refresh to try again."; return; }
     TODAY = iso(new Date());
     // local preview only: ?today=YYYY-MM-DD
     if (location.hostname === "localhost" && /^\d{4}-\d\d-\d\d$/.test(params.get("today") || "")) TODAY = params.get("today");
     if (DEMO) addDemo();
+    if (ui.range === "block" || ui.range === "all") { range = ui.range; document.querySelectorAll("[data-range]").forEach(x => x.setAttribute("aria-pressed", String(x.dataset.range === range))); }
+    if (["A", "B", "C", "walk"].includes(ui.plan)) planPick = ui.plan;
     if (TODAY < firstDay()) {
       range = "all";
       document.querySelectorAll("[data-range]").forEach(x => x.setAttribute("aria-pressed", String(x.dataset.range === "all")));
@@ -1083,11 +1155,22 @@
     wireForm();
     try { MUS = await (await fetch(`data/muscles.json?t=${Date.now()}`, { cache: "no-store" })).json(); } catch {}
     renderAll();
-    // A Home Screen app resumes without reloading, so fetch the log again when it comes back into view
+    // Reopen the Guide chapter and search the app was left on, then start saving.
+    const hashed = location.hash === "#log";
+    if (!hashed && ui.tab === "chapter" && ui.chapter) await openChapter(ui.chapter, ui.anchor, true);
+    if (ui.search && !hashed) { const q = document.getElementById("learn-search"); q.value = ui.search; searchLearn(ui.search); }
+    uiArmed = true;
+    // A Home Screen app resumes without reloading. Fetch the log again when it comes back into view,
+    // and rebuild the page only if the log changed (or the day did), so nothing the reader opened collapses.
     let loadedAt = Date.now();
     document.addEventListener("visibilitychange", async () => {
       if (document.visibilityState !== "visible" || DEMO || Date.now() - loadedAt < 60000) return;
-      try { log = await load(); loadedAt = Date.now(); if (!params.get("today")) TODAY = iso(new Date()); renderAll(); } catch {}
+      try {
+        const text = await load(), day = iso(new Date());
+        loadedAt = Date.now();
+        if (text === raw && (params.get("today") || day === TODAY)) return;
+        raw = text; log = JSON.parse(text); if (!params.get("today")) TODAY = day; renderAll();
+      } catch {}
     });
   }
   init();
