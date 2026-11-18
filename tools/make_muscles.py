@@ -143,14 +143,14 @@ def card(ex):
 
 def sheet(items, title):
     """Small maps in rows of three, each with a caption."""
-    cw, ch, sc = 120, 190, 0.5
+    cw, ch, sc = 120, 200, 0.5
     b, rows = "", (len(items) + 2) // 3
     for i, (name, shade) in enumerate(items):
         cx, cy = (i % 3) * cw, (i // 3) * ch
         b += pair(shade, cx + 8, cy, sc, 8, caps=False)
         words = lines_wrap(name.split(", "), 17) if "," in name else [name]
         for j, w in enumerate(make_forms.wrap(name, 18)):
-            b += txt(cx + 60, cy + 250 * sc + 14 + j * 12, w, "t", "middle")
+            b += txt(cx + 60, cy + 250 * sc + 14 + j * 15, w, "t", "middle")
     return doc(360, rows * ch, b, title)
 
 

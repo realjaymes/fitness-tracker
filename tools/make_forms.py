@@ -392,25 +392,26 @@ def pose_dip(kind):
 
 
 def pose_twist(kind):
+    """Seated, seen from the front: torso upright and narrow, legs flared to the sides so each part reads."""
     cx = 88
     d = -1 if kind == "left" else 1
-    out = mat(10, 168, G)
+    out = ""
     hipy = G - 14
     shy = hipy - 38
-    out += line([(cx, hipy), (cx, shy)], 22)
-    out += line([(cx - 9, shy + 2), (cx + 9, shy + 2)], 9)
-    out += circle((cx + 3 * d, shy - 14), SEG["hr"], "fhh") + line([(cx + 2 * d, shy), (cx + 3 * d, shy - 6)], 5)
-    hand = (cx + d * 26, shy + 22)
     for sx in (-1, 1):
-        s = (cx + sx * 9, shy + 2)
-        el = ik(s, hand, 21, 19, "down")
-        out += arm_draw(s, dict(elbow=el, wrist=hand))
-    out += circle(hand, 4.5, "fh")
+        k = (cx + sx * 17, hipy - 16)
+        foot = (cx + sx * 15, G - 4)
+        hp = (cx + sx * 7, hipy - 2)
+        out += limb([hp, k, foot], [9, 8]) + line([foot, (cx + sx * 19, G - 2)], 6)
+    out += line([(cx, hipy), (cx, shy)], 16) + line([(cx - 9, shy + 1), (cx + 9, shy + 1)], 8)
+    out += circle((cx + 3 * d, shy - 13), SEG["hr"], "fhh") + line([(cx + 2 * d, shy), (cx + 3 * d, shy - 6)], 5)
+    hand = (cx + d * 25, shy + 22)
     for sx in (-1, 1):
-        k = (cx + sx * 10, hipy - 14)
-        out += line([(cx + sx * 6, hipy - 2), k, (cx + sx * 11, G - 4)], 11.5, "hl")
-        out += line([(cx + sx * 6, hipy - 2), k], 9) + line([k, (cx + sx * 11, G - 4)], 8) + line([(cx + sx * 11, G - 4), (cx + sx * 14, G - 2)], 6)
-    return out
+        s0 = (cx + sx * 9, shy + 1)
+        el = ik(s0, hand, 21, 19, "down")
+        out += arm_draw(s0, dict(elbow=el, wrist=hand))
+    out += circle(hand, 4.5, "fhh")
+    return mat(10, 168, G) + f'<g transform="translate(88 {G}) scale(1.3) translate(-88 {-G})">{out}</g>'
 
 
 # ---------------------------------------------------------------- exercise data
@@ -497,14 +498,28 @@ def wrap(s, width):
     return out + ([cur] if cur else [])
 
 
-def pill(x, w, y, s):
-    return f'<rect class="pill" x="{x}" y="{y}" width="{w}" height="20" rx="10"/><text class="pt" x="{x + w / 2}" y="{y + 14}" text-anchor="middle">{s}</text>'
+CHAR_W = 6.4   # estimated width of one bold 10.5px character; textLength below guarantees the fit on any device
+
+
+def cue_pill(cx, y, text, h):
+    """Yellow pill centred on cx. Wraps onto two lines when the text is wider than a panel; the text is
+    forced to its measured width with textLength so it can never run past the pill."""
+    lines = wrap(text, 24) if len(text) * CHAR_W + 20 > PW - 4 else [text]
+    est = max(len(l) for l in lines) * CHAR_W
+    w = min(PW - 4, est + 20)
+    out = f'<rect class="pill" x="{cx - w / 2:.1f}" y="{y}" width="{w:.1f}" height="{h}" rx="{min(10, h / 2)}"/>'
+    y0 = y + (h - 11 * len(lines) - 2 * (len(lines) - 1)) / 2 + 9
+    for k, l in enumerate(lines):
+        tl = min(len(l) * CHAR_W, w - 16)
+        out += (f'<text class="pt" x="{cx:.1f}" y="{y0 + k * 13:.1f}" text-anchor="middle" textLength="{tl:.1f}" '
+                f'lengthAdjust="spacingAndGlyphs">{l}</text>')
+    return out, len(lines)
 
 
 def card_top(name):
     """Two pose panels with START and END labels, a movement arrow and two cue pills. Returns (svg, height)."""
     d = EXERCISES[name]
-    out = ""
+    out, cues = "", []
     for i, fn in enumerate(d["poses"]):
         x = i * (PW + 8)
         label = ("START", "END")[i] + (f" · {d['view'].upper()}" if d["view"] else "")
@@ -513,10 +528,11 @@ def card_top(name):
             for pts, curve in ARROWS.get(name, []):
                 out += arrow(pts, curve)
         out += f'<text class="pl" x="10" y="16">{label}</text></g>'
-        cue = d["cues"][i]
-        w = min(PW, int(len(cue) * 5.9 + 20))
-        out += pill(x + (PW - w) / 2, w, PH + 6, cue)
-    return out, PH + 32
+        cues.append(d["cues"][i])
+    h = 20 if all(len(c) * CHAR_W + 20 <= PW - 4 for c in cues) else 32
+    for i, cue in enumerate(cues):
+        out += cue_pill(i * (PW + 8) + PW / 2, PH + 6, cue, h)[0]
+    return out, PH + 12 + h
 
 
 # Movement arrows drawn in the start panel, pointing the way the move goes first: (points, curved).
@@ -535,5 +551,5 @@ ARROWS = {
     "Barbell Row": [([(122, 108), (122, 80)], False)],
     "Dumbbell Flyes": [([(68, 74), (38, 86)], False), ([(108, 74), (138, 86)], False)],
     "Bench Dips": [([(92, 68), (92, 100)], False)],
-    "Russian Twists": [([(58, 62), (88, 46), (118, 62)], True)],
+    "Russian Twists": [([(52, 50), (88, 28), (124, 50)], True)],
 }
