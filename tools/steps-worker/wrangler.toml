@@ -1,0 +1,7 @@
+name = "fitness-steps"
+main = "worker.js"
+compatibility_date = "2025-09-01"
+workers_dev = true
+
+# Secrets (never in this repo): STEPS_KEY (the iPhone Shortcut's header key) and GITHUB_TOKEN
+# (fine-grained token, repo realjaymes/fitness-tracker only, Contents read and write).
