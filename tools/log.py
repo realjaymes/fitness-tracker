@@ -274,7 +274,7 @@ def cmd_push(log, a):
         print("Nothing new to push.")
         return
     subprocess.run(["git", "-C", str(ROOT), "commit", "-q", "-m", msg], check=True)
-    subprocess.run(["git", "-C", str(ROOT), "pull", "-q", "--rebase"], check=True)
+    subprocess.run(["git", "-C", str(ROOT), "pull", "-q", "--rebase", "--autostash"], check=True)
     subprocess.run(["git", "-C", str(ROOT), "push", "-q"], check=True)
     print("Pushed. The page updates in about a minute.")
 
