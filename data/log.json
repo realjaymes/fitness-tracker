@@ -608,12 +608,20 @@
      "protein_g": 19,
      "carbs_g": 30,
      "fat_g": 14
+    },
+    {
+     "time": "15:41",
+     "desc": "Fried bread (four pieces) with scrambled eggs, tomato and onion",
+     "kcal": 650,
+     "protein_g": 25,
+     "carbs_g": 72,
+     "fat_g": 30
     }
    ],
-   "kcal": 330,
-   "protein_g": 19,
-   "carbs_g": 30,
-   "fat_g": 14
+   "kcal": 980,
+   "protein_g": 44,
+   "carbs_g": 102,
+   "fat_g": 44
   }
  ],
  "sessions": [
