@@ -1,8 +1,10 @@
 // Fitness steps: holds yesterday's step count from James's iPhone Shortcut until the Mac writes it into the log.
 //
 // Cloudflare Worker "fitness-steps". Every route needs the header X-Steps-Key: <secret>.
-//   POST /          body {"steps":N} or {"date":"YYYY-MM-DD","steps":N}  stores steps:<date> in KV, answers {"stored":true}
-//                   With no date the reading belongs to today in Lagos time. The Shortcut sends it each time WhatsApp opens.
+//   POST /          body {"steps":N}, {"steps":N,"day":"yesterday"} or {"date":"YYYY-MM-DD","steps":N}
+//                   stores steps:<date> in KV, answers {"stored":true}. With no date the reading belongs to today in
+//                   Lagos time; with "day":"yesterday" it belongs to yesterday. Each time WhatsApp opens, the Shortcut
+//                   sends today's running total and yesterday's complete total.
 //   GET  /pending   every stored reading not yet marked done: {"pending":[{date,steps,received_at}]}
 //   POST /done      body {"dates":["YYYY-MM-DD",...]}     marks those readings done
 // A reading is a real date from 7 days ago up to today (Lagos time) with whole steps from 0 to 80,000
@@ -81,7 +83,9 @@ export async function handle(request, env) {
   }
 
   const { steps } = body;
-  const date = body.date === undefined ? lagosToday() : body.date;
+  const lagosYesterday = () => new Date(Date.now() + 3600e3 - 864e5).toISOString().slice(0, 10);
+  // {"day":"yesterday"} files the reading under yesterday in Lagos time, so the Shortcut never handles dates.
+  const date = body.date !== undefined ? body.date : body.day === "yesterday" ? lagosYesterday() : lagosToday();
   if (!realDate(date)) return json(400, { ok: false, error: "date must be a real date written YYYY-MM-DD." });
   const age = dayNumber(lagosToday()) - dayNumber(date);
   if (age < 0 || age > MAX_AGE_DAYS)
