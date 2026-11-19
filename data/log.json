@@ -579,12 +579,22 @@
      "protein_g": 12,
      "carbs_g": 30,
      "fat_g": 10
+    },
+    {
+     "time": "22:00",
+     "desc": "Fufu wrap, egusi soup, chicken and beef (soup and meat shared)",
+     "shared": true,
+     "kcal": 1030,
+     "protein_g": 52,
+     "carbs_g": 112,
+     "fat_g": 41
     }
    ],
-   "kcal": 710,
-   "protein_g": 32,
-   "carbs_g": 80,
-   "fat_g": 28
+   "kcal": 1740,
+   "protein_g": 84,
+   "carbs_g": 192,
+   "fat_g": 69,
+   "steps": 8791
   }
  ],
  "sessions": [
