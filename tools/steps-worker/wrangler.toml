@@ -3,5 +3,8 @@ main = "worker.js"
 compatibility_date = "2025-09-01"
 workers_dev = true
 
-# Secrets (never in this repo): STEPS_KEY (the iPhone Shortcut's header key) and GITHUB_TOKEN
-# (fine-grained token, repo realjaymes/fitness-tracker only, Contents read and write).
+[[kv_namespaces]]
+binding = "STEPS"
+id = "58591019bde643a3882ae794d6454f00"
+
+# Secret (never in this repo): STEPS_KEY, the key the iPhone Shortcut and tools/steps-pull.py send in X-Steps-Key.
