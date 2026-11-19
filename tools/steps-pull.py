@@ -2,7 +2,7 @@
 """Pulls step readings from the fitness-steps Worker and logs them.
 
 Run by tools/steps-run.sh (LaunchAgent com.jamespraise.fitnesssteps, 08:20 and 21:20).
-For each pending reading it runs `tools/log.py day <date> --steps N`, commits and pushes
+For each pending reading from a day before today in Lagos time (today's count is still rising, so it stays pending) it runs `tools/log.py day <date> --steps N`, commits and pushes
 data/log.json only, then tells the Worker the dates are done. A Mac that slept simply
 picks up every pending day on the next run. Standard library only.
 
@@ -48,13 +48,15 @@ def git(*args, check=True):
 def main():
     dry = "--dry-run" in sys.argv
     pending = call("/pending")["pending"]
+    today = (dt.datetime.now(dt.timezone.utc) + dt.timedelta(hours=1)).date().isoformat()  # Lagos is UTC+1 all year
     good = []
     for p in pending:
         d, n = p.get("date"), p.get("steps")
         if (isinstance(d, str) and re.fullmatch(r"\d{4}-\d{2}-\d{2}", d) and isinstance(n, int)
                 and not isinstance(n, bool) and 0 <= n <= 80000):
             dt.date.fromisoformat(d)
-            good.append((d, n))
+            if d < today:
+                good.append((d, n))
         else:
             print(f"Skipping a bad reading: {p}")
     print(f"{len(good)} pending: " + ", ".join(f"{d}={n}" for d, n in good) if good else "Nothing pending.")

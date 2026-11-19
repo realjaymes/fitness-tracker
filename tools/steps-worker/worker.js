@@ -1,7 +1,8 @@
 // Fitness steps: holds yesterday's step count from James's iPhone Shortcut until the Mac writes it into the log.
 //
 // Cloudflare Worker "fitness-steps". Every route needs the header X-Steps-Key: <secret>.
-//   POST /          body {"date":"YYYY-MM-DD","steps":N}  stores steps:<date> in KV, answers {"stored":true}
+//   POST /          body {"steps":N} or {"date":"YYYY-MM-DD","steps":N}  stores steps:<date> in KV, answers {"stored":true}
+//                   With no date the reading belongs to today in Lagos time. The Shortcut sends it each time WhatsApp opens.
 //   GET  /pending   every stored reading not yet marked done: {"pending":[{date,steps,received_at}]}
 //   POST /done      body {"dates":["YYYY-MM-DD",...]}     marks those readings done
 // A reading is a real date from 7 days ago up to today (Lagos time) with whole steps from 0 to 80,000
@@ -79,7 +80,8 @@ export async function handle(request, env) {
     return json(200, { ok: true, done });
   }
 
-  const { date, steps } = body;
+  const { steps } = body;
+  const date = body.date === undefined ? lagosToday() : body.date;
   if (!realDate(date)) return json(400, { ok: false, error: "date must be a real date written YYYY-MM-DD." });
   const age = dayNumber(lagosToday()) - dayNumber(date);
   if (age < 0 || age > MAX_AGE_DAYS)

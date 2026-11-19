@@ -49,4 +49,15 @@ assert.deepEqual(pb.pending.map(p => p.date), [lagos(-1)]);
 await post({ date: lagos(-2), steps: 9000 });
 [, pb] = await run(req("GET", "/pending"));
 assert.equal(pb.pending.length, 2, "a re-sent date is pending again");
+// No date: stored under today (Lagos), and the latest reading replaces the earlier one.
+store.clear();
+const [ns, nb] = await post({ steps: 1200 });
+assert.equal(ns, 200); assert.equal(nb.date, lagos(0));
+await run(req("POST", "/done", { dates: [lagos(0)] }));
+assert.equal((await run(req("GET", "/pending")))[1].pending.length, 0);
+await post({ steps: 3400 });
+const [, np] = await run(req("GET", "/pending"));
+assert.deepEqual(np.pending.map(p => [p.date, p.steps]), [[lagos(0), 3400]], "a later reading clears the done mark");
+assert.equal((await post({ steps: 80001 }))[0], 400);
+assert.equal((await post({}))[0], 400);
 console.log("steps-worker: all tests passed");
