@@ -645,12 +645,20 @@
      "protein_g": 14,
      "carbs_g": 51,
      "fat_g": 18
+    },
+    {
+     "time": "10:54",
+     "desc": "Half portion jollof rice with beef, half a can of Fanta (33cl)",
+     "kcal": 490,
+     "protein_g": 24,
+     "carbs_g": 62,
+     "fat_g": 17
     }
    ],
-   "kcal": 400,
-   "protein_g": 14,
-   "carbs_g": 51,
-   "fat_g": 18,
+   "kcal": 890,
+   "protein_g": 38,
+   "carbs_g": 113,
+   "fat_g": 35,
    "steps": 7000
   }
  ],
