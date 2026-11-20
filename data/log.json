@@ -1182,6 +1182,60 @@
    "date": "2026-11-19",
    "type": "mobility",
    "exercises": []
+  },
+  {
+   "date": "2026-11-20",
+   "type": "A",
+   "exercises": [
+    {
+     "name": "Barbell Squat",
+     "kg": 25,
+     "reps": [
+      8,
+      8,
+      8
+     ],
+     "rir": null
+    },
+    {
+     "name": "Bench Press",
+     "kg": 25,
+     "reps": [
+      8,
+      8,
+      8
+     ],
+     "rir": null
+    },
+    {
+     "name": "Dumbbell Row",
+     "kg": 8.5,
+     "reps": [
+      8,
+      8,
+      8
+     ],
+     "rir": null
+    },
+    {
+     "name": "Dumbbell Shoulder Press",
+     "kg": 8.5,
+     "reps": [
+      8,
+      8,
+      8
+     ],
+     "rir": null
+    },
+    {
+     "name": "Plank",
+     "kg": 0,
+     "reps": [
+      30
+     ],
+     "rir": null
+    }
+   ]
   }
  ],
  "body": [
