@@ -636,7 +636,21 @@
   {
    "date": "2026-11-20",
    "sleep_h": 8,
-   "energy": 6
+   "energy": 6,
+   "meals": [
+    {
+     "time": "08:16",
+     "desc": "Two boiled eggs and fried plantain (one small plantain)",
+     "kcal": 400,
+     "protein_g": 14,
+     "carbs_g": 51,
+     "fat_g": 18
+    }
+   ],
+   "kcal": 400,
+   "protein_g": 14,
+   "carbs_g": 51,
+   "fat_g": 18
   }
  ],
  "sessions": [
