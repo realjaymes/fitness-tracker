@@ -669,6 +669,23 @@
    "carbs_g": 233,
    "fat_g": 65,
    "steps": 9155
+  },
+  {
+   "date": "2026-11-21",
+   "meals": [
+    {
+     "time": "07:21",
+     "desc": "Boiled plantain (about one large) and scrambled eggs (about three, fried in oil)",
+     "kcal": 670,
+     "protein_g": 21,
+     "carbs_g": 82,
+     "fat_g": 29
+    }
+   ],
+   "kcal": 670,
+   "protein_g": 21,
+   "carbs_g": 82,
+   "fat_g": 29
   }
  ],
  "sessions": [
