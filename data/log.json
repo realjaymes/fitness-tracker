@@ -675,16 +675,16 @@
    "meals": [
     {
      "time": "07:21",
-     "desc": "Boiled plantain (about one large) and scrambled eggs (about three, fried in oil)",
+     "desc": "Fried plantain (about one large) and two scrambled eggs",
      "kcal": 670,
-     "protein_g": 21,
-     "carbs_g": 82,
+     "protein_g": 15,
+     "carbs_g": 81,
      "fat_g": 29
     }
    ],
    "kcal": 670,
-   "protein_g": 21,
-   "carbs_g": 82,
+   "protein_g": 15,
+   "carbs_g": 81,
    "fat_g": 29
   }
  ],
