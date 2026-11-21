@@ -680,12 +680,21 @@
      "protein_g": 15,
      "carbs_g": 81,
      "fat_g": 29
+    },
+    {
+     "time": "18:14",
+     "desc": "Jollof rice with chicken and beef (Cravings)",
+     "shared": true,
+     "kcal": 865,
+     "protein_g": 43,
+     "carbs_g": 90,
+     "fat_g": 36
     }
    ],
-   "kcal": 670,
-   "protein_g": 15,
-   "carbs_g": 81,
-   "fat_g": 29
+   "kcal": 1535,
+   "protein_g": 58,
+   "carbs_g": 171,
+   "fat_g": 65
   }
  ],
  "sessions": [
