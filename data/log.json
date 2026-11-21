@@ -698,12 +698,21 @@
      "protein_g": 7,
      "carbs_g": 54,
      "fat_g": 14
+    },
+    {
+     "time": "20:00",
+     "desc": "White rice and stew with chicken and titus fish (rice and fish shared)",
+     "shared": true,
+     "kcal": 930,
+     "protein_g": 54,
+     "carbs_g": 76,
+     "fat_g": 43
     }
    ],
-   "kcal": 1865,
-   "protein_g": 65,
-   "carbs_g": 225,
-   "fat_g": 79
+   "kcal": 2795,
+   "protein_g": 119,
+   "carbs_g": 301,
+   "fat_g": 122
   }
  ],
  "sessions": [
