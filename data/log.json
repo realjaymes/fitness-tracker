@@ -689,12 +689,21 @@
      "protein_g": 43,
      "carbs_g": 90,
      "fat_g": 36
+    },
+    {
+     "time": "18:52",
+     "desc": "Roasted plantain and groundnuts",
+     "shared": true,
+     "kcal": 330,
+     "protein_g": 7,
+     "carbs_g": 54,
+     "fat_g": 14
     }
    ],
-   "kcal": 1535,
-   "protein_g": 58,
-   "carbs_g": 171,
-   "fat_g": 65
+   "kcal": 1865,
+   "protein_g": 65,
+   "carbs_g": 225,
+   "fat_g": 79
   }
  ],
  "sessions": [
