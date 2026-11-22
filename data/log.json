@@ -713,6 +713,24 @@
    "protein_g": 119,
    "carbs_g": 301,
    "fat_g": 122
+  },
+  {
+   "date": "2026-11-22",
+   "meals": [
+    {
+     "time": "10:00",
+     "desc": "Boiled potatoes and fried eggs (shared)",
+     "shared": true,
+     "kcal": 490,
+     "protein_g": 18,
+     "carbs_g": 56,
+     "fat_g": 22
+    }
+   ],
+   "kcal": 490,
+   "protein_g": 18,
+   "carbs_g": 56,
+   "fat_g": 22
   }
  ],
  "sessions": [
