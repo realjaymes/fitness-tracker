@@ -754,17 +754,17 @@
    "meals": [
     {
      "time": "11:00",
-     "desc": "Two eggs",
-     "kcal": 170,
+     "desc": "Two boiled eggs",
+     "kcal": 155,
      "protein_g": 13,
      "carbs_g": 1,
-     "fat_g": 12
+     "fat_g": 11
     }
    ],
-   "kcal": 170,
+   "kcal": 155,
    "protein_g": 13,
    "carbs_g": 1,
-   "fat_g": 12
+   "fat_g": 11
   }
  ],
  "sessions": [
