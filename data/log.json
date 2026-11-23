@@ -712,7 +712,8 @@
    "kcal": 2795,
    "protein_g": 119,
    "carbs_g": 301,
-   "fat_g": 122
+   "fat_g": 122,
+   "steps": 8215
   },
   {
    "date": "2026-11-22",
@@ -739,7 +740,8 @@
    "kcal": 1450,
    "protein_g": 48,
    "carbs_g": 186,
-   "fat_g": 55
+   "fat_g": 55,
+   "steps": 6191
   }
  ],
  "sessions": [
