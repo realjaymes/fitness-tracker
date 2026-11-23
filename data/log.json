@@ -725,12 +725,21 @@
      "protein_g": 18,
      "carbs_g": 56,
      "fat_g": 22
+    },
+    {
+     "time": "20:00",
+     "desc": "White rice, fish sauce and fried plantain (shared)",
+     "shared": true,
+     "kcal": 960,
+     "protein_g": 30,
+     "carbs_g": 130,
+     "fat_g": 33
     }
    ],
-   "kcal": 490,
-   "protein_g": 18,
-   "carbs_g": 56,
-   "fat_g": 22
+   "kcal": 1450,
+   "protein_g": 48,
+   "carbs_g": 186,
+   "fat_g": 55
   }
  ],
  "sessions": [
