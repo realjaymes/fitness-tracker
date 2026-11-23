@@ -1355,6 +1355,62 @@
    "type": "walk",
    "exercises": [],
    "note": "Saturday walk and mobility"
+  },
+  {
+   "date": "2026-11-23",
+   "type": "B",
+   "exercises": [
+    {
+     "name": "Deadlift",
+     "kg": 30,
+     "reps": [
+      9,
+      9,
+      9
+     ],
+     "rir": null
+    },
+    {
+     "name": "Incline Dumbbell Press",
+     "kg": 8.5,
+     "reps": [
+      9,
+      9,
+      9
+     ],
+     "rir": null
+    },
+    {
+     "name": "Lunges",
+     "kg": 0,
+     "reps": [
+      9,
+      9,
+      9
+     ],
+     "rir": null
+    },
+    {
+     "name": "Barbell Curl",
+     "kg": 30,
+     "reps": [
+      9,
+      9,
+      9
+     ],
+     "rir": null
+    },
+    {
+     "name": "Leg Raises",
+     "kg": 0,
+     "reps": [
+      9,
+      9,
+      9
+     ],
+     "rir": null
+    }
+   ]
   }
  ],
  "body": [
