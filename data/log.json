@@ -784,12 +784,21 @@
      "protein_g": 6,
      "carbs_g": 70,
      "fat_g": 1
+    },
+    {
+     "time": "22:35",
+     "desc": "Titus fish (mackerel)",
+     "shared": true,
+     "kcal": 255,
+     "protein_g": 24,
+     "carbs_g": 0,
+     "fat_g": 17
     }
    ],
-   "kcal": 1730,
-   "protein_g": 82,
+   "kcal": 1985,
+   "protein_g": 106,
    "carbs_g": 227,
-   "fat_g": 58
+   "fat_g": 75
   }
  ],
  "sessions": [
