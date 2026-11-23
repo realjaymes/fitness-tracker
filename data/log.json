@@ -750,7 +750,21 @@
   {
    "date": "2026-11-23",
    "sleep_h": 8,
-   "energy": 7
+   "energy": 7,
+   "meals": [
+    {
+     "time": "11:00",
+     "desc": "Two eggs",
+     "kcal": 170,
+     "protein_g": 13,
+     "carbs_g": 1,
+     "fat_g": 12
+    }
+   ],
+   "kcal": 170,
+   "protein_g": 13,
+   "carbs_g": 1,
+   "fat_g": 12
   }
  ],
  "sessions": [
