@@ -713,7 +713,8 @@
    "protein_g": 119,
    "carbs_g": 301,
    "fat_g": 122,
-   "steps": 8215
+   "steps": 8215,
+   "energy": 6
   },
   {
    "date": "2026-11-22",
