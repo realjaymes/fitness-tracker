@@ -148,18 +148,18 @@
     if (charts[id]) charts[id].destroy();
     const c = document.getElementById(id);
     if (!c || typeof Chart === "undefined") return;
-    const grid = css("--grid"), muted = css("--muted"), ink = css("--ink");
+    const grid = css("--ft-grid"), muted = css("--ft-muted"), ink = css("--ft-ink");
     const base = {
       responsive: true, maintainAspectRatio: false, animation: false,
       interaction: { mode: "index", intersect: false },
       plugins: {
         legend: { display: false },
-        tooltip: { backgroundColor: css("--surface"), titleColor: ink, bodyColor: ink, borderColor: css("--axis"),
+        tooltip: { backgroundColor: css("--ft-surface"), titleColor: ink, bodyColor: ink, borderColor: css("--ft-axis"),
           borderWidth: 1, padding: 10, boxPadding: 4, usePointStyle: true,
           filter: i => i.raw != null && !i.dataset.hideTip },
       },
       scales: {
-        x: { grid: { display: false }, border: { color: css("--axis") },
+        x: { grid: { display: false }, border: { color: css("--ft-axis") },
           ticks: { color: muted, maxRotation: 0, autoSkip: true, maxTicksLimit: 6, font: { size: 11 } } },
         y: { grid: { color: grid }, border: { display: false }, beginAtZero: true,
           ticks: { color: muted, maxTicksLimit: 5, font: { size: 11 } } },
@@ -179,7 +179,7 @@
     borderRadius: 4, borderSkipped: "start", maxBarThickness: 22, categoryPercentage: 0.8, barPercentage: 0.9, ...extra });
   const line = (label, data, color, extra = {}) => ({ type: "line", label, data, borderColor: color, backgroundColor: color,
     borderWidth: 2, pointRadius: 0, pointHoverRadius: 4, tension: 0.25, spanGaps: true, ...extra });
-  const target = (label, data) => line(label, data, css("--muted"), { borderDash: [4, 4], stepped: true, tension: 0, borderWidth: 1.5 });
+  const target = (label, data) => line(label, data, css("--ft-muted"), { borderDash: [4, 4], stepped: true, tension: 0, borderWidth: 1.5 });
 
   /* ---------- render: header + week ---------- */
   function renderHeader() {
@@ -360,8 +360,8 @@
     const tip = { callbacks: { title: items => items.length ? fmtW(ds[items[0].dataIndex]) + (multiYear ? ` ${ds[items[0].dataIndex].slice(0, 4)}` : "") : "" } };
 
     chart("c-steps", { data: { labels: ds.map(label), datasets: [
-      bar("Steps", steps, css("--s1"), { order: 3 }),
-      line("7-day average", roll, css("--s2"), { order: 1 }),
+      bar("Steps", steps, css("--ft-s1"), { order: 3 }),
+      line("7-day average", roll, css("--ft-s2"), { order: 1 }),
       target("Target", ds.map(stepTarget)),
     ] }, options: { plugins: { tooltip: tip } } });
     const recent = steps.filter(v => v != null);
@@ -375,13 +375,13 @@
     const wl = weeks.map(w => w.start >= blockStart() && w.start <= blockEnd() ? `W${weekOf(w.start)}` : label(w.start));
     const wtip = { callbacks: { title: items => items.length ? `Week of ${fmtY(weeks[items[0].dataIndex].start)}` : "" } };
     chart("c-sessions", { data: { labels: wl, datasets: [
-      bar("Strength", weeks.map(w => w.strength), css("--s1"), { stack: "s" }),
-      bar("Walk or mobility", weeks.map(w => w.light), css("--s3"), { stack: "s", borderSkipped: false }),
+      bar("Strength", weeks.map(w => w.strength), css("--ft-s1"), { stack: "s" }),
+      bar("Walk or mobility", weeks.map(w => w.light), css("--ft-s3"), { stack: "s", borderSkipped: false }),
       target("Pass line", weeks.map(() => t.pass_sessions)),
     ] }, options: { scales: { x: { stacked: true }, y: { stacked: true, suggestedMax: 6, ticks: { stepSize: 1 } } }, plugins: { tooltip: wtip } } });
 
     chart("c-wsteps", { data: { labels: wl, datasets: [
-      bar("Average steps", weeks.map(w => w.steps == null ? null : Math.round(w.steps)), css("--s1")),
+      bar("Average steps", weeks.map(w => w.steps == null ? null : Math.round(w.steps)), css("--ft-s1")),
       target("Target", weeks.map(w => stepTarget(w.start))),
     ] }, options: { plugins: { tooltip: wtip } } });
 
@@ -392,11 +392,11 @@
       chart(id, { data: { labels: ds.map(label), datasets: sets }, options: deepMerge({ plugins: { tooltip: tip } }, opts.options || {}) });
       document.getElementById(bigId).textContent = have.length ? `${n1(mean(have))}${unit} avg${tgt != null ? ` · target ${tgt}${unit}` : ""}` : "No data yet";
     };
-    simple("c-sleep", "sleep_h", "sleep-big", " h", t.sleep_h, css("--s1"), { options: { scales: { y: { suggestedMax: 9 } } } });
-    simple("c-energy", "energy", "energy-big", "", null, css("--s1"), { options: { scales: { y: { min: 0, max: 10 } } } });
+    simple("c-sleep", "sleep_h", "sleep-big", " h", t.sleep_h, css("--ft-s1"), { options: { scales: { y: { suggestedMax: 9 } } } });
+    simple("c-energy", "energy", "energy-big", "", null, css("--ft-s1"), { options: { scales: { y: { min: 0, max: 10 } } } });
     const prot = val("protein_g");
     chart("c-protein", { data: { labels: ds.map(label), datasets: [
-      bar("Protein (g)", prot, css("--s1")), target("Target", ds.map(() => t.protein_g)),
+      bar("Protein (g)", prot, css("--ft-s1")), target("Target", ds.map(() => t.protein_g)),
     ] }, options: { plugins: { tooltip: tip } } });
     const ph = prot.filter(v => v != null);
     document.getElementById("protein-big").textContent = ph.length ? `${n0(mean(ph))} g avg · target ${t.protein_g} g` : "No data yet";
@@ -418,9 +418,9 @@
     }
     const bw = h.length && h.every(x => !x.kg);
     chart("c-lift", { data: { labels: h.map(x => fmt(x.date, { day: "numeric", month: "short", year: "2-digit" })), datasets: bw
-      ? [line("Best set (reps)", h.map(x => x.top), css("--s1"), { pointRadius: 4, tension: 0 })]
-      : [line("Top set (kg)", h.map(x => x.kg), css("--s1"), { pointRadius: 4, tension: 0, stepped: false }),
-         line("Estimated 1-rep max (kg)", h.map(x => x.e1rm && Math.round(x.e1rm * 10) / 10), css("--s2"), { pointRadius: 4, tension: 0 })] },
+      ? [line("Best set (reps)", h.map(x => x.top), css("--ft-s1"), { pointRadius: 4, tension: 0 })]
+      : [line("Top set (kg)", h.map(x => x.kg), css("--ft-s1"), { pointRadius: 4, tension: 0, stepped: false }),
+         line("Estimated 1-rep max (kg)", h.map(x => x.e1rm && Math.round(x.e1rm * 10) / 10), css("--ft-s2"), { pointRadius: 4, tension: 0 })] },
       options: { plugins: { tooltip: { callbacks: { afterBody: items => {
         const x = h[items[0]?.dataIndex]; return x ? `Reps: ${x.reps.join("/")}${x.rir != null ? ` · RIR ${x.rir}` : ""}` : ""; } } } } } });
 
@@ -476,8 +476,8 @@
     const big = document.getElementById("kcal-big");
     big.textContent = kd.length ? `${n0(mean(kd.map(d => d.kcal)))} kcal avg · target ${n0(t.kcal)}` : "No meals logged yet";
     chart("c-kcal", { data: { labels: kd.map(d => lab(d.date)), datasets: [
-      bar("Calories", kd.map(d => d.kcal), css("--s1"), { order: 3 }),
-      line("7-day average", kd.map(d => avg7(d.date)), css("--s2"), { order: 1 }),
+      bar("Calories", kd.map(d => d.kcal), css("--ft-s1"), { order: 3 }),
+      line("7-day average", kd.map(d => avg7(d.date)), css("--ft-s2"), { order: 1 }),
       target("Target", kd.map(() => t.kcal)),
     ] }, options: { scales: { y: { beginAtZero: true, suggestedMax: t.kcal + 400 } } } });
   }
@@ -525,14 +525,14 @@
     renderCalories(from, to);
     const avg7 = ws.map(b => Math.round(mean(ws.filter(x => diffDays(x.date, b.date) >= 0 && diffDays(x.date, b.date) < 7).map(x => x.weight_kg)) * 10) / 10);
     chart("c-weight", { data: { labels: ws.map(b => fmt(b.date, { day: "numeric", month: "short", year: "2-digit" })), datasets: [
-      line("Weigh-in", ws.map(b => b.weight_kg), css("--s1"), { showLine: false, pointRadius: 4, order: 2 }),
-      line("7-day average", avg7, css("--s2"), { order: 1 }),
+      line("Weigh-in", ws.map(b => b.weight_kg), css("--ft-s1"), { showLine: false, pointRadius: 4, order: 2 }),
+      line("7-day average", avg7, css("--ft-s2"), { order: 1 }),
     ] }, options: { scales: { y: { beginAtZero: false, suggestedMin: Math.floor(Math.min(...ws.map(b => b.weight_kg), 99) - 1), suggestedMax: Math.ceil(Math.max(...ws.map(b => b.weight_kg), 0) + 1) } } } });
     document.getElementById("weight-big").textContent = ws.length >= 2 ? `${ws.at(-1).weight_kg - ws[0].weight_kg >= 0 ? "+" : ""}${n1(ws.at(-1).weight_kg - ws[0].weight_kg)} kg in range` : "";
 
     const ms = meas.filter(b => b.date >= from && b.date <= to);
     chart("c-waist", { data: { labels: ms.map(b => fmt(b.date, { day: "numeric", month: "short", year: "2-digit" })), datasets: [
-      line("Waist (in)", ms.map(b => b.waist_in), css("--s1"), { pointRadius: 4, tension: 0 }),
+      line("Waist (in)", ms.map(b => b.waist_in), css("--ft-s1"), { pointRadius: 4, tension: 0 }),
     ] }, options: { scales: { y: { beginAtZero: false, suggestedMin: 33, suggestedMax: 38 } } } });
 
     const all = log.body.filter(b => b.waist_in != null || b.hips_in != null).slice().reverse();

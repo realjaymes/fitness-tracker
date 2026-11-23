@@ -16,7 +16,7 @@
 <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
 <link rel="preconnect" href="https://api.fontshare.com">
 <link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700,900&display=swap">
-<link rel="stylesheet" href="assets/style.css?v=28">
+<link rel="stylesheet" href="assets/style.css?v=29">
 </head>
 <body>
 <header class="top">
@@ -85,10 +85,10 @@
     <div class="card">
       <div class="hgrid" id="hgrid"></div>
       <div class="legend">
-        <span><i style="background:var(--s1)"></i>Strength</span>
-        <span><i style="background:var(--s3)"></i>Walk or mobility</span>
-        <span><i style="background:var(--empty)"></i>No session</span>
-        <span><i style="background:var(--ink);border-radius:50%;width:8px;height:8px"></i>Step target hit</span>
+        <span><i style="background:var(--ft-s1)"></i>Strength</span>
+        <span><i style="background:var(--ft-s3)"></i>Walk or mobility</span>
+        <span><i style="background:var(--ft-empty)"></i>No session</span>
+        <span><i style="background:var(--ft-ink);border-radius:50%;width:8px;height:8px"></i>Step target hit</span>
       </div>
     </div>
   </section>
@@ -103,8 +103,8 @@
     <div class="card">
       <div class="chart-head"><h3>Daily steps</h3><span class="big" id="steps-big"></span></div>
       <div class="legend">
-        <span><i style="background:var(--s1)"></i>Steps</span>
-        <span><i class="ln" style="background:var(--s2)"></i>7-day average</span>
+        <span><i style="background:var(--ft-s1)"></i>Steps</span>
+        <span><i class="ln" style="background:var(--ft-s2)"></i>7-day average</span>
         <span><i class="dash"></i>Target</span>
       </div>
       <div class="chart-box tall"><canvas id="c-steps" aria-label="Daily steps chart"></canvas></div>
@@ -112,8 +112,8 @@
     <div class="card">
       <h3>Sessions per week</h3>
       <div class="legend">
-        <span><i style="background:var(--s1)"></i>Strength</span>
-        <span><i style="background:var(--s3)"></i>Walk or mobility</span>
+        <span><i style="background:var(--ft-s1)"></i>Strength</span>
+        <span><i style="background:var(--ft-s3)"></i>Walk or mobility</span>
         <span><i class="dash"></i>Pass line (2 strength)</span>
       </div>
       <div class="chart-box"><canvas id="c-sessions" aria-label="Sessions per week chart"></canvas></div>
@@ -142,8 +142,8 @@
       <select class="pick" id="lift-pick" aria-label="Choose an exercise"></select>
       <p class="sub" id="lift-line" style="margin-top:8px"></p>
       <div class="legend">
-        <span><i class="ln" style="background:var(--s1)"></i>Top set (kg)</span>
-        <span><i class="ln" style="background:var(--s2)"></i>Estimated 1-rep max (kg)</span>
+        <span><i class="ln" style="background:var(--ft-s1)"></i>Top set (kg)</span>
+        <span><i class="ln" style="background:var(--ft-s2)"></i>Estimated 1-rep max (kg)</span>
       </div>
       <div class="chart-box tall"><canvas id="c-lift" aria-label="Lift progression chart"></canvas></div>
     </div>
@@ -159,8 +159,8 @@
     <div class="card" id="kcal-card" hidden>
       <div class="chart-head"><h3>Calories</h3><span class="big" id="kcal-big"></span></div>
       <div class="legend">
-        <span><i style="background:var(--s1)"></i>Calories</span>
-        <span><i class="ln" style="background:var(--s2)"></i>7-day average</span>
+        <span><i style="background:var(--ft-s1)"></i>Calories</span>
+        <span><i class="ln" style="background:var(--ft-s2)"></i>7-day average</span>
         <span><i class="dash"></i>Target</span>
       </div>
       <div class="chart-box"><canvas id="c-kcal" aria-label="Calories chart"></canvas></div>
@@ -168,8 +168,8 @@
     <div class="card">
       <div class="chart-head"><h3>Weight (kg)</h3><span class="big" id="weight-big"></span></div>
       <div class="legend">
-        <span><i style="background:var(--s1);border-radius:50%"></i>Weigh-in</span>
-        <span><i class="ln" style="background:var(--s2)"></i>7-day average</span>
+        <span><i style="background:var(--ft-s1);border-radius:50%"></i>Weigh-in</span>
+        <span><i class="ln" style="background:var(--ft-s2)"></i>7-day average</span>
       </div>
       <div class="chart-box"><canvas id="c-weight" aria-label="Weight chart"></canvas></div>
     </div>
@@ -275,6 +275,6 @@
 </nav>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
-<script src="assets/app.js?v=32"></script>
+<script src="assets/app.js?v=33"></script>
 </body>
 </html>
