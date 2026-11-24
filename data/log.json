@@ -816,7 +816,9 @@
    "kcal": 325,
    "protein_g": 29,
    "carbs_g": 21,
-   "fat_g": 14
+   "fat_g": 14,
+   "sleep_h": 9,
+   "energy": 6
   }
  ],
  "sessions": [
