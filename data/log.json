@@ -762,11 +762,11 @@
     },
     {
      "time": "13:45",
-     "desc": "Turkey pepper soup with yam (Cravings)",
-     "kcal": 650,
-     "protein_g": 58,
-     "carbs_g": 42,
-     "fat_g": 28
+     "desc": "Turkey pepper soup with yam (Cravings), half",
+     "kcal": 325,
+     "protein_g": 29,
+     "carbs_g": 21,
+     "fat_g": 14
     },
     {
      "time": "22:30",
@@ -795,11 +795,28 @@
      "fat_g": 17
     }
    ],
-   "kcal": 1985,
-   "protein_g": 106,
-   "carbs_g": 227,
-   "fat_g": 75,
+   "kcal": 1660,
+   "protein_g": 77,
+   "carbs_g": 206,
+   "fat_g": 61,
    "steps": 9322
+  },
+  {
+   "date": "2026-11-24",
+   "meals": [
+    {
+     "time": "10:00",
+     "desc": "Turkey pepper soup with yam (Cravings), second half",
+     "kcal": 325,
+     "protein_g": 29,
+     "carbs_g": 21,
+     "fat_g": 14
+    }
+   ],
+   "kcal": 325,
+   "protein_g": 29,
+   "carbs_g": 21,
+   "fat_g": 14
   }
  ],
  "sessions": [
