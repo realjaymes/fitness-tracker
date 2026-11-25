@@ -827,6 +827,11 @@
    "fat_g": 52,
    "sleep_h": 9,
    "energy": 8
+  },
+  {
+   "date": "2026-11-25",
+   "sleep_h": 8,
+   "energy": 7
   }
  ],
  "sessions": [
