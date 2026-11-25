@@ -1506,9 +1506,9 @@
      "name": "Goblet Squat",
      "kg": 8.5,
      "reps": [
-      8,
-      8,
-      8
+      9,
+      9,
+      9
      ],
      "rir": null
     },
@@ -1516,9 +1516,9 @@
      "name": "Barbell Row",
      "kg": 20,
      "reps": [
-      8,
-      8,
-      8
+      9,
+      9,
+      9
      ],
      "rir": null
     },
@@ -1526,9 +1526,9 @@
      "name": "Dumbbell Flyes",
      "kg": 8.5,
      "reps": [
-      8,
-      8,
-      8
+      9,
+      9,
+      9
      ],
      "rir": null
     },
@@ -1536,9 +1536,9 @@
      "name": "Bench Dips",
      "kg": 0,
      "reps": [
-      8,
-      8,
-      8
+      9,
+      9,
+      9
      ],
      "rir": null
     },
@@ -1546,9 +1546,9 @@
      "name": "Russian Twists",
      "kg": 0,
      "reps": [
-      8,
-      8,
-      8
+      9,
+      9,
+      9
      ],
      "rir": null
     }
