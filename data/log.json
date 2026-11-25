@@ -832,7 +832,27 @@
   {
    "date": "2026-11-25",
    "sleep_h": 8,
-   "energy": 7
+   "energy": 7,
+   "meals": [
+    {
+     "desc": "2 boiled eggs",
+     "kcal": 155,
+     "protein_g": 13,
+     "carbs_g": 1,
+     "fat_g": 11
+    },
+    {
+     "desc": "Turkey pepper soup with 3 small pieces of yam and 3 pieces of turkey",
+     "kcal": 560,
+     "protein_g": 43,
+     "carbs_g": 56,
+     "fat_g": 18
+    }
+   ],
+   "kcal": 715,
+   "protein_g": 56,
+   "carbs_g": 57,
+   "fat_g": 29
   }
  ],
  "sessions": [
