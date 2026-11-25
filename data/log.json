@@ -835,6 +835,15 @@
    "energy": 7,
    "meals": [
     {
+     "time": "19:50",
+     "desc": "Okro soup with chicken and beef, one wrap of eba",
+     "shared": true,
+     "kcal": 870,
+     "protein_g": 42,
+     "carbs_g": 115,
+     "fat_g": 25
+    },
+    {
      "desc": "2 boiled eggs",
      "kcal": 155,
      "protein_g": 13,
@@ -849,10 +858,10 @@
      "fat_g": 18
     }
    ],
-   "kcal": 715,
-   "protein_g": 56,
-   "carbs_g": 57,
-   "fat_g": 29
+   "kcal": 1585,
+   "protein_g": 98,
+   "carbs_g": 172,
+   "fat_g": 54
   }
  ],
  "sessions": [
