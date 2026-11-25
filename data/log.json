@@ -1497,6 +1497,62 @@
    "type": "walk",
    "exercises": [],
    "note": "Tuesday walk and mobility"
+  },
+  {
+   "date": "2026-11-25",
+   "type": "C",
+   "exercises": [
+    {
+     "name": "Goblet Squat",
+     "kg": 8.5,
+     "reps": [
+      8,
+      8,
+      8
+     ],
+     "rir": null
+    },
+    {
+     "name": "Barbell Row",
+     "kg": 20,
+     "reps": [
+      8,
+      8,
+      8
+     ],
+     "rir": null
+    },
+    {
+     "name": "Dumbbell Flyes",
+     "kg": 8.5,
+     "reps": [
+      8,
+      8,
+      8
+     ],
+     "rir": null
+    },
+    {
+     "name": "Bench Dips",
+     "kg": 0,
+     "reps": [
+      8,
+      8,
+      8
+     ],
+     "rir": null
+    },
+    {
+     "name": "Russian Twists",
+     "kg": 0,
+     "reps": [
+      8,
+      8,
+      8
+     ],
+     "rir": null
+    }
+   ]
   }
  ],
  "body": [
