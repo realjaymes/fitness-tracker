@@ -174,6 +174,12 @@ def cmd_session(log, a):
     known = {n for names in log["config"]["program"].values() for n in names}
     exercises = [parse_ex(e, known) for e in a.ex or []]
     s = next((x for x in log["sessions"] if x["date"] == date and x["type"] == a.type), None)
+    if a.delete:
+        if s is None:
+            sys.exit(f"No {a.type} session on {date} to delete.")
+        log["sessions"].remove(s)
+        print(f"Deleted session {date} {a.type}")
+        return
     if s is None:
         s = {"date": date, "type": a.type, "exercises": []}
         log["sessions"].append(s)
@@ -298,6 +304,7 @@ def main():
     s.add_argument("--minutes", type=int)
     s.add_argument("--note")
     s.add_argument("--append", action="store_true", help="add exercises instead of replacing them")
+    s.add_argument("--delete", action="store_true", help="remove that date's session of this type (a wrong log)")
 
     m = sub.add_parser("meal")
     m.add_argument("date", nargs="?")
