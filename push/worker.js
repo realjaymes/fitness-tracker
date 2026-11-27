@@ -60,6 +60,7 @@ export function buildMessage(log, slot, today) {
   let kind, done;
   const strengthToday = on(today).find(s => NEXT[s.type]);
   if (strengthToday) [kind, done] = [strengthToday.type, true];
+  else if (block.rest && block.rest.from && today >= block.rest.from && (!block.rest.to || today <= block.rest.to)) [kind, done] = ["rest", true];
   else if (lead[today]) [kind, done] = lead[today] === "walk" ? ["walk", lightDone] : [nextStrength(today), false];
   else if (STRENGTH_DAYS.includes(weekday(today))) [kind, done] = [nextStrength(today), false];
   else if (weekday(today) === 6) [kind, done] = ["rest", true];
