@@ -892,6 +892,14 @@
    "date": "2026-11-27",
    "meals": [
     {
+     "time": "21:40",
+     "desc": "One piece of turkey in pepper soup (half portion)",
+     "kcal": 210,
+     "protein_g": 21,
+     "carbs_g": 2,
+     "fat_g": 12
+    },
+    {
      "desc": "Half portion jollof rice, fried egg, one piece of beef, one piece of chicken",
      "kcal": 690,
      "protein_g": 44,
@@ -906,10 +914,10 @@
      "fat_g": 12
     }
    ],
-   "kcal": 995,
-   "protein_g": 50,
-   "carbs_g": 88,
-   "fat_g": 47
+   "kcal": 1205,
+   "protein_g": 71,
+   "carbs_g": 90,
+   "fat_g": 59
   }
  ],
  "sessions": [
