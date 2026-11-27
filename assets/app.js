@@ -797,9 +797,12 @@
     const last = log.sessions.filter(s => /^[ABC]$/.test(s.type) && s.date < date && s.date >= from).at(-1);
     return last ? { A: "B", B: "C", C: "A" }[last.type] : "A";
   }
+  // A rest period (config.block.rest: from, optional to) turns every day in it into a rest day until James ends it.
+  function inRest(date) { const r = cfg().block?.rest; return !!(r && r.from && date >= r.from && (!r.to || date <= r.to)); }
   function planFor(date) {
     const done = sessionsOn(date).find(s => /^[ABC]$/.test(s.type));
     if (done) return { kind: done.type, done: true };
+    if (inRest(date)) return { kind: "rest" };
     const li = leadIn()[date];
     if (li) return li === "walk" ? { kind: "walk", done: sessionsOn(date).some(s => LIGHT.has(s.type)) } : { kind: nextStrength(date) };
     const wd = dayIdx(date);
@@ -809,6 +812,7 @@
   }
   function missedYesterday(date) {
     const y = addDays(date, -1);
+    if (inRest(y) || inRest(date)) return null;
     if (!STRENGTH_DAYS.includes(dayIdx(y)) || y < blockStart()) return null;
     return sessionsOn(y).some(isStrength) || sessionsOn(date).some(isStrength) ? null : nextStrength(date);
   }

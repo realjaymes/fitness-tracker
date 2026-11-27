@@ -10,6 +10,10 @@
    "lead_in": {
     "2026-11-14": "A",
     "2026-11-15": "walk"
+   },
+   "rest": {
+    "from": "2026-11-27",
+    "note": "Rest days until James says otherwise"
    }
   },
   "targets": {
@@ -882,6 +886,29 @@
    "protein_g": 104,
    "carbs_g": 113,
    "fat_g": 60
+  },
+  {
+   "date": "2026-11-27",
+   "meals": [
+    {
+     "desc": "Half portion jollof rice, fried egg, one piece of beef, one piece of chicken",
+     "kcal": 690,
+     "protein_g": 44,
+     "carbs_g": 46,
+     "fat_g": 35
+    },
+    {
+     "desc": "Indomie noodles, small pack",
+     "kcal": 305,
+     "protein_g": 6,
+     "carbs_g": 42,
+     "fat_g": 12
+    }
+   ],
+   "kcal": 995,
+   "protein_g": 50,
+   "carbs_g": 88,
+   "fat_g": 47
   }
  ],
  "sessions": [
