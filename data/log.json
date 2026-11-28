@@ -922,7 +922,36 @@
   {
    "date": "2026-11-28",
    "sleep_h": 8,
-   "energy": 3
+   "energy": 3,
+   "meals": [
+    {
+     "desc": "Half a chicken salad (Cravings n More)",
+     "shared": true,
+     "kcal": 230,
+     "protein_g": 12,
+     "carbs_g": 15,
+     "fat_g": 14
+    },
+    {
+     "desc": "Ofada rice and ofada stew with one beef and two small pieces of meat (Cravings n More)",
+     "shared": true,
+     "kcal": 700,
+     "protein_g": 37,
+     "carbs_g": 70,
+     "fat_g": 30
+    },
+    {
+     "desc": "L&Z sweetened fruit yoghurt, 1 litre",
+     "kcal": 900,
+     "protein_g": 30,
+     "carbs_g": 140,
+     "fat_g": 25
+    }
+   ],
+   "kcal": 1830,
+   "protein_g": 79,
+   "carbs_g": 225,
+   "fat_g": 69
   }
  ],
  "sessions": [
